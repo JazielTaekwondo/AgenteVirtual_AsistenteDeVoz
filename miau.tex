@@ -1,0 +1,241 @@
+% --- INICIO DEL DOCUMENTO LATEX ---
+% Preámbulo proporcionado por el usuario
+\documentclass[a4paper,12pt]{article}
+\usepackage{siunitx}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla,es-noshorthands]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb} % Necesario para \lor, \land, \Leftrightarrow
+\usepackage{xcolor}
+\usepackage{graphicx} % Necesario para \includegraphics (aunque usaremos placeholders)
+\usepackage[citecolor=blue]{hyperref}       % Para enlaces en el documento
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{circuitikz}
+\usepackage{listings}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{gensymb}
+\usepackage{longtable}           % Permite tablas que ocupan múltiples páginas
+\usepackage{booktabs}            % Para líneas de tabla más bonitas
+\usepackage{array}               % Columnas tipo p{..} y mejoras en tablas
+\usepackage{tabularx}            % Columnas elásticas X
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\lstset{breaklines=true, breakatwhitespace=true}
+
+  
+% Ajuste de la altura del encabezado
+\setlength{\headheight}{76.27646pt}
+\addtolength{\topmargin}{-34.27646pt}
+
+% --- NUEVOS COMANDOS ---
+% Definimos \V y \F para Verdadero y Falso en negrita-matemática
+\newcommand{\V}{$\mathbf{V}$}
+\newcommand{\F}{$\mathbf{F}$}
+
+% Plantilla reutilizable para el "Reporte breve del líder"
+% Uso: \ReporteSesion{Equipo}{Integrantes}{Objetivo}{Actividades}{Avances}{Pendientes}{Enlace}
+\newcommand{\ReporteSesion}[7]{%
+    \renewcommand{\arraystretch}{1.25}%
+    \begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.32\textwidth}X@{}}
+        \toprule
+    Equipo: & #1 \\
+    Integrantes presentes: & #2 \\
+    Objetivo de la sesión: & #3 \\
+    Actividades realizadas: & #4 \\
+    Avances logrados / acuerdos: & #5 \\
+    Pendientes y próximos pasos: & #6 \\
+    Enlace a repositorio/drive (si aplica): & #7 \\
+        \bottomrule
+    \end{tabularx}%
+}
+
+
+% --- INICIO DEL DOCUMENTO ---
+\begin{document}
+
+% --- PORTADA PERSONALIZADA ---
+% Desactivar la numeración de página para la portada
+\thispagestyle{empty}
+
+% Colocar las imágenes en las esquinas superiores
+% --- NOTA: Se reemplazaron \includegraphics por \framebox por limitaciones del entorno ---
+\begin{minipage}[t]{0.4\textwidth}
+    \raggedright
+    \includegraphics[width=2cm]{image/der.png} % Código original
+    %\framebox{Logo Izq. (der.png)}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+    \raggedleft
+    \includegraphics[width=2cm]{image/izq.png} % Código original
+    %\framebox{Logo Der. (izq.png)}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{center}
+    \Huge{\textbf{Proyecto Final: Asistente Virtual.}}
+
+    \vspace{2cm}
+    \Large{\textbf{Universidad Nacional Autonoma de Mexico.}}\\
+    \Large{\textbf{Facultad de ingeniería.}}\\
+    \vspace{1cm}
+    %\Large{Departamento de Ing. en Control y Robotica.} \\
+    %\vspace{0.5cm}
+    \Large{Inteligencia Artificial.} \\
+    \vspace{0.5cm}
+    \LARGE{\textbf{Nombre del equipo:}}
+    \LARGE{\textit{Los puffs}}\\
+    \vspace{0.5cm}
+    \Large{\textbf{Equipo:} 3} \\
+    \vspace{0.5cm}
+    \Large{\textbf{Grupo:} 5} \\
+    \vspace{0.5cm}
+    \LARGE{\textbf{Alumno (s):} }\\
+    \vspace{0.2cm}
+    \Large{320060829.} \\
+    \vspace{0.2cm}
+    \Large{320317264.} \\
+    \vspace{0.2cm}
+    \Large{320206968.} \\
+    \vspace{0.2cm}
+    \Large{320025561.} \\
+    \vspace{0.2cm}
+    \Large{320266083.} \\
+    %\Large{\textbf{Brigada:}}
+    %\Large{06} \\
+    %\vspace{0.5cm}
+    \vspace{2cm}
+    \Large{\textbf{Fecha de la sesion:}}\\
+    \vspace{0.5cm}
+    \large{{Noviembre 11, 2025}}
+\end{center} 
+
+
+\newpage
+
+\pagestyle{fancy}
+
+\fancyhf{}
+
+\fancyhead[L]{\includegraphics[width=1.5cm]{image/izq.png}}
+
+\fancyhead[R]{\includegraphics[width=1.5cm]{image/der.png}}
+
+\fancyfoot[C]{\thepage}  % Coloca el número de página en el centro del pie de página
+% Línea horizontal en el pie de página
+\renewcommand{\footrulewidth}{0.4pt}  % Define el grosor de la línea en el pie de página
+
+% Empezar numeración de páginas desde 1 en la segunda página
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% --- FIN DE LA SECCIÓN DE PORTADA Y CONFIGURACIÓN ---
+
+% --- INICIO DEL CONTENIDO DEL PLAN DE PROYECTO ---
+
+\tableofcontents
+\newpage
+
+% --- SECCIONES DEL DOCUMENTO ---
+\section{Integrantes presentes:}
+\begin{itemize}
+    \item Espinoza Matamoros Percival Ulises.
+    \item Flores Colin Victor Jaziel.
+    \item Garcia Cortes Adolfo de Jesus
+    \item Lara Hernandez Angel Husiel.
+    \item Lugo Manzano Rodrigo.
+\end{itemize}
+    
+\section{Objetivos de la sesion}
+Presentar las bases del documento y la asignación de roles dentro del equipo. El proyecto sera la creación de un asistente inteligente de voz, programado íntegramente en Python.
+
+El objetivo es diseñar un agente que pueda:
+\begin{itemize}
+    \item Escuchar y procesar comandos de voz (Speech-to-Text).
+    \item Comprender la intención del usuario (Natural Language Processing).
+    \item Tomar decisiones y ejecutar acciones basadas en esa intención (Lógica del Agente).
+    \item Proporcionar retroalimentación audible (Text-to-Speech).
+\end{itemize}
+
+\section{Actividades Realizadas:}
+\begin{itemize}
+    \item Creación del repositorio en GitHub para el proyecto.
+    \item Definición de roles y responsabilidades para cada uno de nosotros.
+    \item Establecimiento de objetivos claros para el proyecto y la sesión inicial.
+    \item Distribución de tareas específicas para cada integrante del equipo.
+\end{itemize}
+
+\section{Avances logrados / acuerdos:}
+
+\begin{description}
+        \item\textbf{Configuración del Repositorio.} Victor Ya tiene listo el repositorio en GitHub, con la estructura de proyecto base.
+        \item \textbf{Definición de Roles para el equipo.} Se definieron los módulos principales: STT (Percival), TTS (Angel), NLP e Integración (Victor), Lógica del Agente (Adolfo) y Documentación (Rodrigo).
+        \item \textbf{Investigar de cada modulo} Cada miembro investigará las librerías y arquitecturas necesarias para el módulo correspendiente (STT, TTS, NLP, Lógica del Agente).
+\end{description}
+
+
+\section{Pendientes y próximos pasos:}
+
+\subsection{Actividades pendientes:}
+
+\begin{description}
+    \item\textbf{Investigación y Definición de Módulos.} Lo primero sera investigar las librerías de Python y las arquitecturas necesarias para STT, TTS, NLP, Lógica del Agente.
+    
+    \item \textbf{Desarrollo de Prototipos.} Desarrollo de prototipos para cada módulo principal (STT, TTS, NLP).
+    
+    \item\textbf{Definición de API .} La API a utilizar sera implementadas directametne de OpenAI, para los usos de las API de los modelos de GPT o dependiendo del avance de los modulos a desarrollar.
+    
+    \item\textbf{Implementación de Lógica del Agente.} Desarrollo compelto del asistente (lógica de decisión) y la aplicación Python funcional.
+    
+    \item\textbf{Redacción de Documentación.} Conforme a la terminacion de los modulos, se iran documetando idividualmente y finalización del Entregable de Teoría (Ensayo en LaTeX).
+    
+\end{description}
+
+
+\subsection{Acuerdos de Tareas para el equipo:}
+La carga de trabajo se distribuye de la siguiente manera:
+
+\textbf{Victor (Líder y NLP)}
+\begin{itemize}
+    \item \textbf{Gestión de Repositorio:} Configurar y mantener el repositorio de GitHub, gestionar las ramas (branches) y fusiones (merges). **Con ayuda de Perci".
+    \item \textbf{Módulo de NLP (Natural Language Processing):} Desarrollar el componente central que recibe el texto transcrito por Victor. (Dependiendo del analisis que podra tener las API de OpenIA)
+    \item \textbf{Responsabilidad Clave:} Usando librerías como \texttt{spaCy} o \texttt{NLTK}, deberá extraer la \textbf{intención} del usuario (e.g., "buscar", "reproducir", "preguntar") y las \textbf{entidades} (e.g., "clima en CDMX", "canción de X").
+\end{itemize}
+
+\textbf{Percival (Módulo de Speech-to-Text - STT)}
+\begin{itemize}
+    \item \textbf{Módulo STT (Reconocimiento de Voz):} Implementar el componente que escucha activamente el micrófono.
+    \item \textbf{Librerías:} Investigar e implementar la librería más adecuada (e.g., \texttt{SpeechRecognition}) para capturar el audio y transcribirlo a una cadena de texto.
+    \item \textbf{Activación:} Investigar la implementación de una "palabra de activación" para que el asistente no escuche permanentemente.
+\end{itemize}
+
+\textbf{Angel (Módulo de Text-to-Speech - TTS)}
+\begin{itemize}
+    \item \textbf{Módulo TTS (Síntesis de Voz):} Desarrollar el componente que le da "voz" al asistente.
+    \item \textbf{Librerías:} Recibirá una cadena de texto (la respuesta del asistente) y usará una librería (e.g., \texttt{pyttsx3}, \texttt{gTTS}) para sintetizarla en audio y reproducirla.
+\end{itemize}
+
+\textbf{Adolfo (Lógica del Agente y Acciones)}
+\begin{itemize}
+    \item \textbf{Núcleo Lógico (Cerebro):} Diseñar e implementar el "cerebro" del asistente.
+    \item \textbf{Sistema de Reglas/Decisión:} Recibirá la "intención" y las "entidades" del módulo NLP de Percival.
+    \item \textbf{Responsabilidad Clave:} Implementará la lógica (usando un sistema de reglas, \texttt{if-elif-else}, o un árbol de decisión) para determinar \textbf{qué acción} debe ejecutar el asistente.
+    \item \textbf{Codificación de Acciones:} Programará las acciones básicas (e.g., responder a un saludo, decir la hora).
+\end{itemize}
+
+\textbf{Rodrigo (Documentación Técnica y Teórica)}
+\begin{itemize}
+    \item \textbf{Responsable de Documentación:} Se encargará de toda la documentación escrita del proyecto.
+    \item \textbf{Entregable de Teoría:} Redactar el ensayo en LaTeX sobre los modelos de IA, para que sea como los requisitos del proyecto.
+
+\end{itemize}
+
+\section{Enlace a Repositorio:}
+Esta es la liga al repositorio del proyecto en GitHub:
+
+\url{https://github.com/JazielTaekwondo/AgenteVirtual_AsistenteDeVoz.git}
+
+
+
+\end{document}

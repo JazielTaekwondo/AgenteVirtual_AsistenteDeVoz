@@ -1,0 +1,10 @@
+todo.md
+*.toc
+*.aux
+*.log
+*.out
+*.fls
+*.log
+*.out
+*.gz
+*.synctex
