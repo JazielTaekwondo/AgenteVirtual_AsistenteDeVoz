@@ -1683,7 +1683,7 @@ if __name__ == "__main__":
             gui = ChatGUI()
             gui.run()
         except RuntimeError as exc:
-            print(f"No pude iniciar la interfaz gráfica: {exc}. Abriendo modo consola...")
+            print(f"No pude iniciar la interfaz gráfica: {exc}. Abriendo modo consola, mi...")
             run_cli_assistant()
     else:
         run_cli_assistant()
