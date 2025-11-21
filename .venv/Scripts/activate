@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="c:\Users\Angel Lara\Music\semestre7\IA\Proyecto_FinalIA\.venv"
+VIRTUAL_ENV="C:\Users\angel\Downloads\Proyecto_FinalIA\Proyecto_FinalIA\.venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

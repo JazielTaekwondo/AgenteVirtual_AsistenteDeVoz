@@ -12,6 +12,7 @@ todo.md
 
 # Python environment artifacts
 .venv/
+.venv_old*/
 __pycache__/
 *.pyc
 *.pyo
