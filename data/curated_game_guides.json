@@ -1,0 +1,414 @@
+{
+  "black_ops_2_origins": {
+    "aliases": [
+      "black ops 2 origins",
+      "black op 2 origins",
+      "origins black ops 2",
+      "origins bo2",
+      "bo2 origins",
+      "black ops ii origins",
+      "easter egg origins bo2",
+      "little lost girl"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Secure the Keys",
+        "snippet": "Activa los seis generadores y arma el gramofono con su disco negro para abrir el Crazy Place. Dentro fabrica cada baston elemental reuniendo las piezas en los pedestales del mapa.",
+        "url": "https://callofduty.fandom.com/wiki/Origins/Easter_Egg#Secure_the_Keys"
+      },
+      {
+        "title": "Paso 2 - Ascend from Darkness",
+        "snippet": "Resuelve los rompecabezas de cada baston dentro del Crazy Place, mejora los bastones y colocalos en los pedestales del santuario y luego dentro del robot que corresponde (Viento en Freya, Hielo en Ullr, Rayo en Thor, Fuego en la Montania).",
+        "url": "https://callofduty.fandom.com/wiki/Origins/Easter_Egg#Ascend_from_Darkness"
+      },
+      {
+        "title": "Paso 3 - Release the Souls",
+        "snippet": "Tras mejorar los bastones aparecen cuatro cofres de almas en la superficie. Mata zombis cerca de cada cofre hasta cerrarlos y reclama el Puno de Hierro (Thunder Fists).",
+        "url": "https://callofduty.fandom.com/wiki/Origins/Easter_Egg#Release_the_Souls"
+      },
+      {
+        "title": "Paso 4 - Unleash the Horde",
+        "snippet": "Equipa los punos y regresa al Crazy Place para eliminar templarios iluminados; recoge las piedras sangrientas y llevalas al altar para desbloquear los Air Strike Beacons.",
+        "url": "https://callofduty.fandom.com/wiki/Origins/Easter_Egg#Unleash_the_Horde"
+      },
+      {
+        "title": "Paso 5 - Skewer the Winged Beast",
+        "snippet": "Usa un baston mejorado para derribar el avion marcado y elimina al Panzer guardian para obtener la pieza del V-Staff; lanza un Air Strike donde caiga el Maxis Drone para abrir el robot en vuelo.",
+        "url": "https://callofduty.fandom.com/wiki/Origins/Easter_Egg#Skewer_the_Winged_Beast"
+      },
+      {
+        "title": "Paso 6 - Raise Hell y Freedom",
+        "snippet": "Dentro del Crazy Place mata zombis con los punos elementales hasta cargar los pilares y libera a Samantha colocando el Maxis Drone en el portal central para finalizar Little Lost Girl.",
+        "url": "https://callofduty.fandom.com/wiki/Origins/Easter_Egg#Raise_Hell"
+      }
+    ],
+    "sample_prompts": [
+      "Como completo el easter egg de Origins en Black Ops 2?",
+      "Guia paso a paso de Little Lost Girl BO2"
+    ]
+  },
+  "black_ops_2_tranzit": {
+    "aliases": [
+      "tranzit",
+      "bo2 tranzit",
+      "tower of babble",
+      "torre de babylon",
+      "tranzit easter egg",
+      "pylon quest",
+      "green run easter egg"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Arma el equipo obligatorio",
+        "snippet": "Ensamblar la Turbine en el Bus Depot y el Thrustodyne Aeronautics Model 23 (Jet Gun) con piezas del tunel, la planta electrica, la granja y el cornfield; ambos son requeridos para Tower of Babble.",
+        "url": "https://callofduty.fandom.com/wiki/Tower_of_Babble"
+      },
+      {
+        "title": "Paso 2 - Energiza la instalacion",
+        "snippet": "Enciende la planta electrica y deja que el Avogadro quede liberado antes de apagarla otra vez si sigues la ruta de Maxis. Asegurate de que todos tengan Turbine listas para mas tarde.",
+        "url": "https://callofduty.fandom.com/wiki/Tower_of_Babble#Step_1"
+      },
+      {
+        "title": "Paso 3 - Construye la Navcard Table",
+        "snippet": "Reune las piezas detras de la granja (escalera, panel, piedra y radio) y arma la Navcard Table en el claro del cornfield, debajo del gran pilar iluminado.",
+        "url": "https://callofduty.fandom.com/wiki/Navcard_Table"
+      },
+      {
+        "title": "Paso 4 - Posiciona las Turbines",
+        "snippet": "Coloca dos Turbines en los postes de luz que rodean el pylon mientras dos jugadores permanecen debajo del obelisco para mantener zeds alejados. No las dejes destruirse.",
+        "url": "https://callofduty.fandom.com/wiki/Tower_of_Babble#Step_2"
+      },
+      {
+        "title": "Paso 5 - Invoca al Avogadro",
+        "snippet": "Lleva al Avogadro hasta el centro del pylon y derribalo usando el Jet Gun para sobrecargar el dispositivo y escuchar a Maxis ordenar el siguiente paso.",
+        "url": "https://callofduty.fandom.com/wiki/Tower_of_Babble#Step_3"
+      },
+      {
+        "title": "Paso 6 - Sincroniza la senal",
+        "snippet": "Mantengan vivas las Turbines hasta que Maxis complete la transmision; si una cae, reemplazala de inmediato. Cuando el discurso termina se desbloquea el logro Tower of Babble.",
+        "url": "https://callofduty.fandom.com/wiki/Tower_of_Babble#Step_4"
+      }
+    ],
+    "sample_prompts": [
+      "Como hago Tower of Babble en Tranzit?",
+      "Necesito los pasos del easter egg de Tranzit Black Ops 2"
+    ]
+  },
+  "black_ops_3_shadows_of_evil": {
+    "aliases": [
+      "shadows of evil",
+      "bo3 shadows",
+      "apocalypse averted",
+      "shadows easter egg",
+      "soE",
+      "rituales shadows"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Completa los rituales",
+        "snippet": "Recolecta los objetos del Apothicon Servant, abre Beast Mode en cada distrito y ejecuta los cuatro rituales de invocacion para conseguir las insignias y liberar al Shadow Man.",
+        "url": "https://callofduty.fandom.com/wiki/Shadows_of_Evil/Easter_Egg#Rituals"
+      },
+      {
+        "title": "Paso 2 - Ensambla el Apothicon Servant",
+        "snippet": "Reune las tres piezas aleatorias (Xenomatter, Tentacle y Fused Core) para construir el arma especial; facilita controlar olas y cargar huevos.",
+        "url": "https://callofduty.fandom.com/wiki/Apothicon_Servant"
+      },
+      {
+        "title": "Paso 3 - Consigue y mejora la espada",
+        "snippet": "Llena los huevos en cada estatua del subterraneo para obtener la Apothicon Sword y luego completa los cuatro desafios de Arch-Ovum para evolucionarla a Wrath of the Ancients.",
+        "url": "https://callofduty.fandom.com/wiki/Shadows_of_Evil/Easter_Egg#Swords"
+      },
+      {
+        "title": "Paso 4 - Destruye al Shadow Man",
+        "snippet": "Activa los cuatro interruptores del subterraneo, coloca a cada jugador en su panel y dispara al Shadow Man mientras el escudo protector baja.",
+        "url": "https://callofduty.fandom.com/wiki/Shadows_of_Evil/Easter_Egg#Boss_Fight"
+      },
+      {
+        "title": "Paso 5 - Finaliza Apocalypse Averted",
+        "snippet": "Tras la cinematica, uno de los jugadores debe entrar al tren como Richtofen para culminar el final canonico; los demas protegen las bobinas hasta escuchar la confirmacion.",
+        "url": "https://callofduty.fandom.com/wiki/Shadows_of_Evil/Easter_Egg#Ending"
+      }
+    ],
+    "sample_prompts": [
+      "Explicame el easter egg de Shadows of Evil",
+      "Pasos para Apocalypse Averted en Black Ops 3"
+    ]
+  },
+  "elden_ring_ranni": {
+    "aliases": [
+      "ranni quest",
+      "elden ring ranni",
+      "age of stars",
+      "questline ranni",
+      "elden ring moonlight",
+      "ranni ending"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Gana su confianza",
+        "snippet": "Derrota a Radahn o progresa en Caria Manor hasta acceder a Ranni's Rise, jura servirla y habla con Blaidd, Iji y Seluvis para activar la aventura.",
+        "url": "https://eldenring.fandom.com/wiki/Ranni_the_Witch"
+      },
+      {
+        "title": "Paso 2 - Explora Nokron",
+        "snippet": "Tras vencer a Radahn cae una estrella que abre Nokron; alli debes obtener la Fingerslayer Blade y entregarsela a Ranni para que abandone su torre.",
+        "url": "https://eldenring.fandom.com/wiki/Nokron,_Eternal_City"
+      },
+      {
+        "title": "Paso 3 - Accede a Ainsel River",
+        "snippet": "Encuentra el miniaturized Ranni en Ainsel River Main, habla en la hoguera hasta que responda y sigue la marca hasta Nokstella y Lake of Rot.",
+        "url": "https://eldenring.fandom.com/wiki/Ainsel_River"
+      },
+      {
+        "title": "Paso 4 - Derrota a Astel",
+        "snippet": "Purga Nokstella, activa el elevador del Lake of Rot y vence a Astel, Naturalborn of the Void para liberar el acceso al Moonlight Altar.",
+        "url": "https://eldenring.fandom.com/wiki/Astel,_Naturalborn_of_the_Void"
+      },
+      {
+        "title": "Paso 5 - Reclama la Dark Moon Ring",
+        "snippet": "Sube a Cathedral of Manus Celes, encuentra la Dark Moon Ring en el cofre de Ranni y completa la ceremonia para comprometerte con ella.",
+        "url": "https://eldenring.fandom.com/wiki/Dark_Moon_Ring"
+      },
+      {
+        "title": "Paso 6 - Desencadena Age of Stars",
+        "snippet": "Tras matar al Elden Beast toca la marca azul en Fractured Marika para invocar a Ranni y desbloquear el final Age of Stars.",
+        "url": "https://eldenring.fandom.com/wiki/Age_of_Stars"
+      }
+    ],
+    "sample_prompts": [
+      "Que pasos sigo para la quest de Ranni en Elden Ring?",
+      "Como desbloqueo el final Age of Stars?"
+    ]
+  },
+  "zelda_totk_master_sword": {
+    "aliases": [
+      "totk master sword",
+      "legend of zelda master sword",
+      "lagrimas del reino master sword",
+      "zelda tears master sword",
+      "como conseguir la master sword",
+      "master sword quest",
+      "master sword tears of the kingdom",
+      "espada maestra totk",
+      "espada maestra tears"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Activa la mision",
+        "snippet": "Habla con el Great Deku Tree tras purificarlo en Korok Forest para recibir el objetivo Recovering the Hero's Sword.",
+        "url": "https://zelda.fandom.com/wiki/Recovering_the_Hero%27s_Sword"
+      },
+      {
+        "title": "Paso 2 - Traza la ruta del dragon",
+        "snippet": "Observa el cielo o usa la camara para ubicar al Light Dragon; suele orbitar Hyrule en sentido horario a gran altura.",
+        "url": "https://www.ign.com/wikis/the-legend-of-zelda-tears-of-the-kingdom/How_to_Get_the_Master_Sword"
+      },
+      {
+        "title": "Paso 3 - Mejora tu vigor",
+        "snippet": "Necesitas dos ruedas completas de stamina; intercambia 5 luces de bendicion por contenedores de vigor en cualquier estatua de la diosa.",
+        "url": "https://zelda.fandom.com/wiki/Light_of_Blessing"
+      },
+      {
+        "title": "Paso 4 - Aterriza sobre el dragon",
+        "snippet": "Usa torres, sky islands o una Zonai wing para planear sobre el Light Dragon y cae sobre su lomo cuando se acerque.",
+        "url": "https://www.polygon.com/zelda-tears-of-the-kingdom-guide/23719147/master-sword-location"
+      },
+      {
+        "title": "Paso 5 - Extrae la espada",
+        "snippet": "Sosten el boton A para jalar la Master Sword mientras dura tu vigor; si se vacia caeras y deberas reintentar.",
+        "url": "https://www.gamespot.com/articles/zelda-tears-of-the-kingdom-master-sword-location-guide/1100-6514334/"
+      },
+      {
+        "title": "Paso 6 - Sincroniza con la bateria",
+        "snippet": "Equipala y prueba su nueva carga infinita que se recarga sola; recuerda que su poder aumenta frente a Gloom o a Ganondorf.",
+        "url": "https://zelda.nintendo.com/tears-of-the-kingdom/"
+      }
+    ],
+    "sample_prompts": [
+      "Como consigo la Master Sword en Tears of the Kingdom?",
+      "Dame guia para encontrar la espada maestra en TOTK"
+    ]
+  },
+  "assassins_creed_brotherhood_brutus_armor": {
+    "aliases": [
+      "armor of brutus",
+      "armadura de bruto",
+      "lairs of romulus",
+      "guaridas de romulo",
+      "romulus lairs",
+      "brotherhood brutus quest"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Coliseo Halls of Nero",
+        "snippet": "Entra al Coliseo cuando aparezca el marcador lobo y completa el recorrido Halls of Nero para obtener la primera llave de Romulo.",
+        "url": "https://assassinscreed.fandom.com/wiki/Halls_of_Nero"
+      },
+      {
+        "title": "Paso 2 - Catacumbas Wolves Among the Dead",
+        "snippet": "Sigue el lobo en las catacumbas cercanas a San Giovanni para superar Wolves Among the Dead y recoger la segunda llave.",
+        "url": "https://assassinscreed.fandom.com/wiki/Wolves_Among_the_Dead"
+      },
+      {
+        "title": "Paso 3 - Acueducto Throne of Romulus",
+        "snippet": "Escala el acueducto oriental y avanza por las plataformas de Throne of Romulus para añadir otra llave a tu inventario.",
+        "url": "https://assassinscreed.fandom.com/wiki/Throne_of_Romulus"
+      },
+      {
+        "title": "Paso 4 - Termas The Sixth Day",
+        "snippet": "Completa los saltos de The Sixth Day en las termas de Caracalla evitando a los guardias para conseguir la cuarta llave.",
+        "url": "https://assassinscreed.fandom.com/wiki/The_Sixth_Day"
+      },
+      {
+        "title": "Paso 5 - Vaticano A Wolf in Sheep's Clothing",
+        "snippet": "Infiltrate la Basilica de San Pedro, sigue a los cardenales y finaliza A Wolf in Sheep's Clothing para la quinta llave.",
+        "url": "https://assassinscreed.fandom.com/wiki/A_Wolf_in_Sheep%27s_Clothing"
+      },
+      {
+        "title": "Paso 6 - Abre la cripta",
+        "snippet": "Tras reunir las seis llaves regresa al Coliseo, baja a la cripta de Romulo y coloca todas las llaves para reclamar la Armadura de Bruto y la daga legendaria.",
+        "url": "https://assassinscreed.fandom.com/wiki/Armor_of_Brutus"
+      }
+    ],
+    "sample_prompts": [
+      "Como desbloqueo la armadura de Bruto en Assassin's Creed Brotherhood?",
+      "Que pasos necesito para las guaridas de Romulo?"
+    ]
+  },
+  "assassins_creed_black_flag_templar_keys": {
+    "aliases": [
+      "templar keys",
+      "llaves templarias",
+      "armadura templaria black flag",
+      "assassins creed 4 templar hunts",
+      "ac4 templar hunt",
+      "black flag templar armor"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Caza en Nassau",
+        "snippet": "Completa la cadena de Rhona Dinsmore en Nassau (\"Little Brother\" hasta \"The Commander's Ruse\") para obtener la primera llave templaria.",
+        "url": "https://assassinscreed.fandom.com/wiki/Rhona_Dinsmore"
+      },
+      {
+        "title": "Paso 2 - Caza en Havana",
+        "snippet": "Ayuda a Opia Apito en la region de Havana y cierra la mision \"Opia's Templar Hunt\" para conseguir la segunda llave.",
+        "url": "https://assassinscreed.fandom.com/wiki/Opia_Apito"
+      },
+      {
+        "title": "Paso 3 - Caza en Kingston",
+        "snippet": "Sigue a Anto en Kingston; tras completar las misiones \"Virtue of the Saints\" y \"Black Bart's Gambit\" recibes la tercera llave.",
+        "url": "https://assassinscreed.fandom.com/wiki/Templar_Hunt"
+      },
+      {
+        "title": "Paso 4 - Caza en New Bone",
+        "snippet": "Derrota a Jing Lang en el islote de New Bone (despues de \"A Slaver's Business\") para asegurar la cuarta y ultima llave.",
+        "url": "https://assassinscreed.fandom.com/wiki/Jing_Lang"
+      },
+      {
+        "title": "Paso 5 - Recolecta los cofres Mayan",
+        "snippet": "Limpia Great Inagua, abre la camara bajo la mansion y usa las cuatro llaves templarias para reclamar la armadura templaria con defensa extra.",
+        "url": "https://assassinscreed.fandom.com/wiki/Templar_Key"
+      }
+    ],
+    "sample_prompts": [
+      "Necesito las llaves templarias en AC4, que hago?",
+      "Guiame para conseguir la armadura templaria de Black Flag"
+    ]
+  },
+  "assassins_creed_odyssey_gates_of_atlantis": {
+    "aliases": [
+      "gates of atlantis",
+      "puertas de atlantida",
+      "atlantis quest odyssey",
+      "artifacts odyssey",
+      "mythical creatures odyssey",
+      "criaturas miticas odyssey",
+      "derrotar criaturas miticas odyssey"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Habla con Pitagoras",
+        "snippet": "Avanza la historia de \"A Family Legacy\" hasta entrar a la ciudad sumergida y conversa con Pitagoras para recibir la mision Gates of Atlantis.",
+        "url": "https://assassinscreed.fandom.com/wiki/Gates_of_Atlantis"
+      },
+      {
+        "title": "Paso 2 - Resuelve el enigma de la Esfinge",
+        "snippet": "Completa \"Lore of the Sphinx\" en Beocia, responde correctamente las adivinanzas y activa el pilar para obtener el primer artefacto.",
+        "url": "https://assassinscreed.fandom.com/wiki/Lore_of_the_Sphinx"
+      },
+      {
+        "title": "Paso 3 - Derrota al Ciclope",
+        "snippet": "Sigue \"Stairway to Olympos\" en la isla de Kythera, usa el sello de Empedocles y vence a Brontes para conseguir el segundo artefacto.",
+        "url": "https://assassinscreed.fandom.com/wiki/Stairway_to_Olympos"
+      },
+      {
+        "title": "Paso 4 - Vence al Minotauro",
+        "snippet": "Completa la cadena \"Myths and Minotaurs\" en Messara, atraviesa el Labyrinth of Lost Souls y derrota al Minotauro para otro artefacto.",
+        "url": "https://assassinscreed.fandom.com/wiki/Myths_and_Minotaurs"
+      },
+      {
+        "title": "Paso 5 - Enfrenta a Medusa",
+        "snippet": "En Lesbos sigue \"Romancing the Stone Garden\", libera a Bryce y derrota a Medusa en la Petrified Temple para el cuarto artefacto.",
+        "url": "https://assassinscreed.fandom.com/wiki/Romancing_the_Stone_Garden"
+      },
+      {
+        "title": "Paso 6 - Sella Atlantis",
+        "snippet": "Regresa con Pitagoras, inserta los cuatro artefactos en los mecanismos del portal y observa la escena que revela el secreto de Atlantis.",
+        "url": "https://assassinscreed.fandom.com/wiki/Gates_of_Atlantis"
+      }
+    ],
+    "sample_prompts": [
+      "Como abro las puertas de Atlantida en AC Odyssey?",
+      "Pasos para derrotar a las cuatro criaturas miticas de Odyssey"
+    ]
+  },
+  "assassins_creed_valhalla_excalibur": {
+    "aliases": [
+      "excalibur valhalla",
+      "assassins creed valhalla excalibur",
+      "tabletas misteriosas valhalla",
+      "tablets misteriosas valhalla",
+      "how to get excalibur ac valhalla",
+      "mireddin cave",
+      "valhalla zealot tablets"
+    ],
+    "steps": [
+      {
+        "title": "Paso 1 - Reune las tablas de las cuevas",
+        "snippet": "Explora Grime's Graves, Santlache Mine, Cavern of Trials y otras cinco cavernas con icono azul para juntar las ocho tablas del Misterio de Britannia.",
+        "url": "https://assassinscreed.fandom.com/wiki/Mystery_of_Britannia"
+      },
+      {
+        "title": "Paso 2 - Derriba a los tres zealos",
+        "snippet": "Derrota a Woden, Heike y Hrothgar para obtener las tres tablas de los zealots requeridas por Excalibur.",
+        "url": "https://assassinscreed.fandom.com/wiki/Order_of_the_Ancients_(Assassin%27s_Creed:_Valhalla)#Zealots"
+      },
+      {
+        "title": "Paso 3 - Viaja a Myrddin's Cave",
+        "snippet": "Ve al suroeste de Hamtunscire y localiza la entrada a Myrddin's Cave tras la cascada para comenzar el rompecabezas final.",
+        "url": "https://assassinscreed.fandom.com/wiki/Myrddin%27s_Cave"
+      },
+      {
+        "title": "Paso 4 - Coloca las once tablas",
+        "snippet": "Inserta cada tablet en los monolitos dentro de la camara circular, respetando cualquier orden; todas deben iluminarse para desbloquear la espada.",
+        "url": "https://assassinscreed.fandom.com/wiki/Excalibur_(Valhalla)"
+      },
+      {
+        "title": "Paso 5 - Reclama Excalibur",
+        "snippet": "Con los monolitos activos, jala Excalibur del pedestal central para agregar la espada mitica a tu inventario.",
+        "url": "https://assassinscreed.fandom.com/wiki/Excalibur_(Valhalla)"
+      },
+      {
+        "title": "Paso 6 - Mejora la espada",
+        "snippet": "Regresa al asentamiento, mejora Excalibur en la forja y equipala con runas de ataque pesado para aprovechar su ceguera en impactos cargados.",
+        "url": "https://assassinscreed.fandom.com/wiki/Weapons_in_Assassin%27s_Creed:_Valhalla"
+      }
+    ],
+    "sample_prompts": [
+      "Guia completa para Excalibur en AC Valhalla",
+      "Que necesito para colocar las tablets misteriosas en Valhalla?"
+    ]
+  }
+}

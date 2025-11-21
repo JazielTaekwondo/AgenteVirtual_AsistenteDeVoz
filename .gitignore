@@ -8,3 +8,18 @@ todo.md
 *.out
 *.gz
 *.synctex
+*.zip
+
+# Python environment artifacts
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local configuration / secrets
+.env
+.python-version
+
+# Large local binaries
+tools/ollama/ollama-windows-amd64.zip
