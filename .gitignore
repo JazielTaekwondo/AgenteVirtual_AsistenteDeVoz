@@ -1,3 +1,4 @@
+*.zip
 todo.md
 *.toc
 *.aux
@@ -8,7 +9,6 @@ todo.md
 *.out
 *.gz
 *.synctex
-*.zip
 
 # Python environment artifacts
 .venv/
@@ -22,5 +22,5 @@ __pycache__/
 .env
 .python-version
 
-# Large local binaries
-tools/ollama/ollama-windows-amd64.zip.venv/
+# Large local binaries / assets
+tools/ollama/ollama-windows-amd64.zip

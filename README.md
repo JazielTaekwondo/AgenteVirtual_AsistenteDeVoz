@@ -1,58 +1,91 @@
 # Agente Virtual con IA Local
 
-Este asistente ahora puede funcionar sin depender de servicios en la nube mediante un modelo local servido por [Ollama](https://ollama.com/). Sigue estos pasos en Windows para habilitarlo.
+Este asistente puede ejecutarse con modelos remotos o completamente en tu máquina mediante [Ollama](https://ollama.com/). A continuación se detalla cómo preparar el entorno virtual, instalar dependencias y habilitar el modo local.
 
-## Requisitos
-- Python 3.11+ y el entorno virtual ya provisto (`.venv`).
-- Ollama instalado y en ejecución (`ollama serve`).
-- Un modelo descargado en Ollama (por ejemplo, `llama3.2`).
+>[!NOTE]
+> **Instala todas las dependencias antes de ejecutar `agente.py`.**
 
-## Configuración rápida
-1. Instala Ollama y reinicia tu terminal.
-2. Descarga un modelo compatible:
+## 1. Crear y activar el entorno virtual
+En el directorio del proyecto abre una terminal y ejecuta:
+
+```powershell
+python -m venv .venv
+```
+
+Activa el entorno:
+
+- **Windows**
+  ```powershell
+  .venv\Scripts\activate
+  ```
+- **macOS / Linux**
+  ```bash
+  source .venv/bin/activate
+  ```
+
+## 2. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+## 3. Ejecutar el asistente
+
+Modo CLI rápido:
+
+```powershell
+python agente.py --cli
+```
+
+### Prueba puntual
+
+```powershell
+python code\test_local_llm.py "¿Cuál es la capital de Francia?"
+```
+Si no proporcionas argumento, se usa una pregunta de ejemplo.
+
+## 4. Configurar modelo local con Ollama
+
+1. Instala Ollama y asegúrate de ejecutar `ollama serve`.
+2. Descarga el modelo deseado:
    ```powershell
    ollama run llama3.2
    ```
-3. Define las variables en `.env` (o mediante `setx`):
+3. Define las variables en `.env` o con `setx`:
    ```
    AGENTE_LOCAL_LLM=ollama
    AGENTE_LOCAL_MODEL=llama3.2
    AGENTE_LOCAL_BASE_URL=http://127.0.0.1:11434
    ```
-4. Ejecuta el asistente en modo CLI para validar:
+4. Valida con:
    ```powershell
-   .\.venv\Scripts\python.exe agente.py --cli
+   python agente.py --cli
    ```
 
-## Prueba puntual
-También puedes lanzar una pregunta directa sin iniciar la interfaz completa:
-```powershell
-.\.venv\Scripts\python.exe code\test_local_llm.py "¿Cuál es la capital de Francia?"
-```
-Si no pasas argumentos, el script usa una pregunta de ejemplo.
+### Consejos
 
-## Consejos
-- Si deseas volver temporalmente a un proveedor remoto, desactiva `AGENTE_LOCAL_LLM` y coloca tu clave en `AGENTE_LLM_API_KEY`.
-- Ajusta `AGENTE_LOCAL_TIMEOUT` en segundos si el modelo local tarda más en responder.
-- Cuando `AGENTE_LOCAL_STRICT=1`, el asistente no intentará usar proveedores remotos si el modelo local falla.
+- Para volver al proveedor remoto, borra `AGENTE_LOCAL_LLM` y usa `AGENTE_LLM_API_KEY`.
+- Ajusta `AGENTE_LOCAL_TIMEOUT` si el modelo local tarda más en responder.
+- `AGENTE_LOCAL_STRICT=1` evita que el asistente busque un LLM remoto como respaldo.
 
-## Automatización de WhatsApp Web
-Puedes pedirle al asistente que envíe mensajes repetidos por WhatsApp Web (por ejemplo: *"manda un WhatsApp a Ana que diga '¡Ya vamos en camino!' tres veces"*). Para que funcione:
+## 5. Automatización de WhatsApp Web
 
-1. Instala las dependencias nuevas:
+Puedes solicitar envíos como: *"manda un WhatsApp a Ana que diga '¡Ya vamos en camino!' tres veces"*. Requisitos:
+
+1. Instala Selenium y dependencias:
    ```powershell
-   .\.venv\Scripts\pip.exe install -r requirements.txt
+   pip install -r requirements.txt
    ```
-2. Asegúrate de tener Google Chrome instalado. El asistente abrirá una ventana automatizada y necesitarás iniciar sesión en [https://web.whatsapp.com](https://web.whatsapp.com) la primera vez.
-3. Opcionalmente ajusta estas variables de entorno:
-   - `AGENTE_WHATSAPP_ENABLED=1` para activar/desactivar la característica.
-   - `AGENTE_WHATSAPP_PROFILE` para indicar dónde se guardará el perfil persistente de Chrome (por defecto `~/.miau_whatsapp`).
-   - `AGENTE_WHATSAPP_WAIT` (segundos) para cambiar el tiempo máximo de espera antes de considerar que WhatsApp no cargó.
-   - `AGENTE_WHATSAPP_KEEP_BROWSER=1` si quieres mantener el navegador abierto después de enviar los mensajes (útil para depurar).
-   - `AGENTE_HEADLESS=1` permitirá usar Chrome en modo headless, aunque se recomienda desactivarlo para facilitar el escaneo del código QR inicial.
-4. Cuando pidas envíos por WhatsApp, intenta mencionar claramente:
-   - El destinatario (por ejemplo, “a Carlos” o “a +529991112233”).
-   - El mensaje entre comillas o tras frases como “que diga…”.
-   - El número de repeticiones (ej. “3 veces”). Si omites este dato se envía una sola vez.
+2. Ten Google Chrome instalado y entra en [https://web.whatsapp.com](https://web.whatsapp.com) la primera vez para vincular la cuenta.
+3. Variables útiles:
+   - `AGENTE_WHATSAPP_ENABLED=1` activa/desactiva la función.
+   - `AGENTE_WHATSAPP_PROFILE` define la carpeta del perfil persistente (por defecto `~/.miau_whatsapp`).
+   - `AGENTE_WHATSAPP_WAIT` (segundos) controla el tiempo máximo de espera.
+   - `AGENTE_WHATSAPP_KEEP_BROWSER=1` mantiene el navegador abierto tras enviar mensajes.
+   - `AGENTE_HEADLESS=1` usa Chrome en modo headless (solo si ya cuentas con el QR escaneado).
+4. Cuando hagas la solicitud menciona:
+   - Destinatario (nombre o número completo).
+   - Mensaje (entre comillas o tras “que diga…”).
+   - Número de repeticiones (si falta, se envía una sola vez).
 
-Si Selenium no está instalado, la automatización responderá que no puede completarse. En ese caso vuelve a instalar las dependencias e intenta otra vez.
+Si Selenium falta, recibirás un aviso para reinstalar dependencias.
