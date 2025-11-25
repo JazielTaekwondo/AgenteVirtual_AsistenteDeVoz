@@ -14,6 +14,7 @@ import unicodedata
 import urllib.parse
 import webbrowser
 import math
+from collections import Counter, defaultdict
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
@@ -98,7 +99,422 @@ GUI_AVAILABLE = tk is not None
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 CURATED_GUIDES_PATH = DATA_DIR / "curated_game_guides.json"
+CURATED_RECIPES_PATH = DATA_DIR / "curated_recipes.json"
+CURATED_HARDWARE_PATH = DATA_DIR / "curated_hardware_builds.json"
+CURATED_ANIME_PATH = DATA_DIR / "curated_anime_catalog.json"
 
+RAW_COOKING_KEYWORDS = {
+    "receta",
+    "recetas",
+    "cocina",
+    "cocinar",
+    "cocine",
+    "platillo",
+    "platillos",
+    "plato",
+    "menu",
+    "ingredientes",
+    "preparar comida",
+    "que cocinar",
+    "que comer",
+    "ideas de comida",
+    "sugerencias de comida",
+    "no se que cocinar",
+}
+
+RAW_RECIPE_RANDOM_PATTERNS = [
+    "no se que cocinar",
+    "no se que comer",
+    "no tengo idea de que cocinar",
+    "que puedo cocinar hoy",
+    "que preparo hoy",
+    "no se que hacer de comer",
+    "dame opciones de comida",
+]
+
+RAW_RECIPE_FILTER_HINTS = {
+    "desayuno": {"desayuno"},
+    "almuerzo": {"comida"},
+    "comida": {"comida"},
+    "cena": {"cena"},
+    "noche": {"cena"},
+    "ligera": {"comida ligera"},
+    "light": {"comida ligera"},
+    "sin carne": {"vegana", "plant_based"},
+    "vegana": {"vegana", "plant_based"},
+    "vegetariana": {"vegana"},
+    "pescado": {"pescado", "pescetariana"},
+    "marisco": {"mariscos", "pescetariana"},
+    "pollo": {"pollo"},
+    "res": {"res"},
+    "cerdo": {"cerdo"},
+    "garbanzo": {"garbanzos"},
+    "lenteja": {"lentejas"},
+    "tofu": {"tofu"},
+    "hongos": {"hongos"},
+    "coliflor": {"coliflor"},
+}
+
+RAW_HARDWARE_KEYWORDS = {
+    "pc",
+    "computadora",
+    "computador",
+    "torre",
+    "armar pc",
+    "componentes",
+    "setup",
+    "gpu",
+    "tarjeta grafica",
+    "tarjeta gráfica",
+    "cpu",
+    "procesador",
+    "ryzen",
+    "intel",
+    "laptop",
+    "notebook",
+    "portatil",
+    "portátil",
+    "ultrabook",
+    "workstation",
+    "estacion de trabajo",
+    "estación de trabajo",
+    "rtx",
+    "radeon",
+    "intel arc",
+}
+
+RAW_HARDWARE_DESKTOP_KEYWORDS = {
+    "pc",
+    "computadora",
+    "armar",
+    "componentes",
+    "torre",
+    "desktop",
+    "equipo armado",
+}
+
+RAW_HARDWARE_LAPTOP_KEYWORDS = {
+    "laptop",
+    "portatil",
+    "portátil",
+    "notebook",
+    "ultrabook",
+    "movil",
+    "móvil",
+}
+
+RAW_HARDWARE_RANDOM_PATTERNS = [
+    "elige por mi",
+    "elige por mí",
+    "no se que pc",
+    "no sé que pc",
+    "no se que laptop",
+    "no sé que laptop",
+    "dame opciones de pc",
+    "dame opciones de laptop",
+]
+
+RAW_HARDWARE_FILTER_HINTS = {
+    "1080p": {"1080p", "gaming_1080p"},
+    "1440p": {"1440p", "gaming_1440p"},
+    "4k": {"4k", "gaming_4k"},
+    "edicion": {"creator", "edicion_video"},
+    "edición": {"creator", "edicion_video"},
+    "render": {"render"},
+    "cad": {"cad"},
+    "ingenieria": {"cad", "simulacion"},
+    "simulacion": {"simulacion"},
+    "simulación": {"simulacion"},
+    "ia": {"ai_training", "ai_workstation"},
+    "inteligencia artificial": {"ai_training"},
+    "machine learning": {"ai_training"},
+    "streaming": {"streaming"},
+    "creator": {"creator"},
+    "youtube": {"streaming"},
+    "tiktok": {"streaming"},
+    "barata": {"budget_entry"},
+    "economica": {"budget_entry"},
+    "económica": {"budget_entry"},
+    "presupuesto": {"budget_entry"},
+    "mid range": {"mid_high"},
+    "gama alta": {"enthusiast"},
+    "workstation": {"workstation"},
+    "oficina": {"productividad"},
+    "movilidad": {"movilidad", "ultrabook"},
+    "ligera": {"ultrabook"},
+    "bateria": {"movilidad"},
+    "batería": {"movilidad"},
+    "intel arc": {"intel_arc"},
+    "arc": {"intel_arc"},
+    "nvidia": {"nvidia", "rtx"},
+    "amd": {"amd"},
+    "ryzen": {"ryzen"},
+    "threadripper": {"workstation"},
+    "core ultra": {"intel"},
+    "gaming": {"gaming"},
+}
+
+RAW_HARDWARE_DETAIL_TRIGGERS = [
+    "detalle",
+    "detalles",
+    "detallame",
+    "detállame",
+    "explica",
+    "explícame",
+    "explicame",
+    "por que",
+    "porque",
+    "razon",
+    "razón",
+    "motivo",
+    "justifica",
+    "vale la pena",
+    "por que elegiste",
+    "por qué elegiste",
+    "quiero saber",
+]
+
+RAW_HARDWARE_COMPONENT_KEYWORDS = {
+    "cpu": [
+        "cpu",
+        "procesador",
+        "procesadora",
+        "ryzen",
+        "intel",
+        "core",
+        "apu",
+    ],
+    "gpu": [
+        "gpu",
+        "tarjeta grafica",
+        "tarjeta gráfica",
+        "grafica",
+        "gráfica",
+        "rtx",
+        "gtx",
+        "nvidia",
+        "geforce",
+        "radeon",
+        "rx",
+    ],
+    "ram": [
+        "ram",
+        "memoria",
+        "memoria ram",
+    ],
+    "storage": [
+        "ssd",
+        "almacenamiento",
+        "disco",
+        "hdd",
+        "nvme",
+        "m2",
+        "m.2",
+        "unidad",
+    ],
+    "motherboard": [
+        "motherboard",
+        "placa",
+        "placa madre",
+        "board",
+    ],
+    "psu": [
+        "psu",
+        "fuente",
+        "fuente de poder",
+        "power supply",
+        "alimentacion",
+        "alimentación",
+    ],
+    "cooling": [
+        "cooler",
+        "refrigeracion",
+        "refrigeración",
+        "disipador",
+        "liquida",
+        "liquída",
+        "aire",
+        "aio",
+    ],
+    "case": [
+        "gabinete",
+        "case",
+        "torre",
+        "chasis",
+        "caja",
+    ],
+    "display": [
+        "pantalla",
+        "display",
+    ],
+    "battery": [
+        "bateria",
+        "batería",
+    ],
+    "weight": [
+        "peso",
+        "portabilidad",
+        "ligera",
+        "ligero",
+    ],
+}
+
+RAW_ANIME_RANDOM_PATTERNS = [
+    "no se que anime ver",
+    "no sé que anime ver",
+    "elige por mi anime",
+    "elige por mí anime",
+    "sorprendeme con anime",
+    "sorpréndeme con anime",
+    "dame cualquier anime",
+]
+
+RAW_ANIME_FILTER_HINTS = {
+    "shonen": {"shonen"},
+    "shounen": {"shonen"},
+    "seinen": {"seinen"},
+    "shojo": {"shojo"},
+    "josei": {"josei"},
+    "accion": {"accion"},
+    "acción": {"accion"},
+    "romance": {"romance"},
+    "drama": {"drama"},
+    "comedia": {"comedia"},
+    "fantasia": {"fantasia"},
+    "fantasía": {"fantasia"},
+    "ciencia ficcion": {"ciencia ficcion"},
+    "ciencia ficción": {"ciencia ficcion"},
+    "scifi": {"ciencia ficcion"},
+    "misterio": {"misterio"},
+    "thriller": {"misterio"},
+    "terror": {"terror"},
+    "horror": {"terror"},
+    "deportes": {"deportes"},
+    "futbol": {"deportes"},
+    "basket": {"deportes"},
+    "mecha": {"mechas"},
+    "mechas": {"mechas"},
+    "viajes en el tiempo": {"viajes temporales"},
+    "viajes temporales": {"viajes temporales"},
+    "isekai": {"fantasia"},
+    "magia": {"magia"},
+    "idol": {"idol", "musical"},
+    "musica": {"musical"},
+    "música": {"musical"},
+    "slice of life": {"slice of life"},
+    "vida diaria": {"slice of life"},
+    "escolar": {"escolar"},
+    "samurai": {"samurai"},
+    "espionaje": {"espionaje"},
+    "gastronomia": {"gastronomia"},
+    "gastronomía": {"gastronomia"},
+    "pelicula": {"pelicula", "film"},
+    "película": {"pelicula", "film"},
+    "movie": {"pelicula", "film"},
+    "film": {"pelicula", "film"},
+    "temporada corta": {"season_corta"},
+    "temporada larga": {"season_larga"},
+    "pelicula larga": {"pelicula_larga"},
+    "pelicula corta": {"pelicula_corta"},
+    "clasico": {"era_clasico"},
+    "clásico": {"era_clasico"},
+    "retro": {"era_clasico"},
+    "moderno": {"era_moderno"},
+    "nuevo": {"era_moderno"},
+}
+
+RAW_ANIME_TOKEN_STOPWORDS = [
+    "anime",
+    "animes",
+    "serie",
+    "series",
+    "ver",
+    "verme",
+    "busca",
+    "buscar",
+    "recomienda",
+    "recomiendame",
+    "recomiéndame",
+    "dame",
+    "quiero",
+    "necesito",
+    "algo",
+    "para",
+    "un",
+    "una",
+    "que",
+    "cual",
+    "pelicula",
+    "película",
+    "movie",
+    "film",
+    "temporada",
+    "temporadas",
+    "episodio",
+    "episodios",
+    "dime",
+]
+
+RAW_EMOTION_BOOST_KEYWORDS = [
+    "aumenta tu estado emocional",
+    "sube tu estado emocional",
+    "sube tu energia",
+    "sube tu energía",
+    "ponte mas feliz",
+    "ponte más feliz",
+    "ponte mas alegre",
+    "ponte más alegre",
+    "ponte mas animado",
+    "ponte más animado",
+    "mas emocion",
+    "más emocion",
+    "mas energía",
+    "mas energia",
+    "quiero que hables con mas emocion",
+    "quiero que hables con más emocion",
+    "incrementa tu animo",
+    "incrementa tu ánimo",
+]
+
+RAW_IDENTITY_QUERY_PATTERNS = [
+    "quien eres",
+    "quien eres tu",
+    "quien eres tú",
+    "quien sos",
+    "que eres",
+    "que eres tu",
+    "como te llamas",
+    "como te llamas tu",
+    "cómo te llamas",
+    "cómo te llamas tú",
+    "cual es tu nombre",
+    "cuál es tu nombre",
+    "dime tu nombre",
+    "di tu nombre",
+    "quiero saber tu nombre",
+    "dime como te llamas",
+    "presentate",
+    "preséntate",
+    "hablame de ti",
+    "quien demonios eres",
+]
+
+RAW_COMPLIMENT_REQUEST_PATTERNS = [
+    "dime algo bonito",
+    "di algo bonito",
+    "dime algo lindo",
+    "di algo lindo",
+    "dime algo tierno",
+    "quiero escuchar algo bonito",
+    "quiero escuchar algo lindo",
+    "dime algo que me anime",
+    "dime algo motivador",
+    "dime algo hermoso",
+    "dime algo cariñoso",
+    "dime algo dulce",
+    "necesito algo bonito",
+    "necesito algo lindo",
+]
 
 def _create_round_rect(canvas: "tk.Canvas", x1: float, y1: float, x2: float, y2: float, radius: float = 18, **kwargs: Any) -> int:
     radius = max(0, min(radius, (x2 - x1) / 2, (y2 - y1) / 2))
@@ -616,6 +1032,13 @@ PROJECT_EVAL_PHRASES = {
     "como ves la calificacion del proyecto",
     "cuanto crees que deberiamos sacar por como te programamos",
     "cuanto crees que deberiamos de sacar por quipo",
+    "que calificacion merece nuestro proyecto",
+    "qué calificación merece nuestro proyecto",
+    "que calificacion merece este proyecto",
+    "que calificacion merece el proyecto",
+    "que nota nos darias por como te programamos",
+    "que calificacion nos darias por programarte asi",
+    "que calificacion deberiamos sacar por la forma en que te programamos",
 }
 CREATOR_QUERY_PHRASES = {
     "quien te programo",
@@ -795,6 +1218,244 @@ def _normalize_command_text(text: str) -> str:
     normalized = unicodedata.normalize("NFD", text)
     ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
     return ascii_text.lower()
+
+
+COOKING_KEYWORDS = {
+    _normalize_command_text(keyword)
+    for keyword in RAW_COOKING_KEYWORDS
+}
+RECIPE_RANDOM_PATTERNS = {
+    _normalize_command_text(pattern)
+    for pattern in RAW_RECIPE_RANDOM_PATTERNS
+}
+RECIPE_FILTER_HINTS = {
+    _normalize_command_text(trigger): {
+        _normalize_command_text(tag)
+        for tag in tags
+    }
+    for trigger, tags in RAW_RECIPE_FILTER_HINTS.items()
+}
+
+HARDWARE_KEYWORDS = {
+    _normalize_command_text(keyword)
+    for keyword in RAW_HARDWARE_KEYWORDS
+}
+HARDWARE_DESKTOP_KEYWORDS = {
+    _normalize_command_text(keyword)
+    for keyword in RAW_HARDWARE_DESKTOP_KEYWORDS
+}
+HARDWARE_LAPTOP_KEYWORDS = {
+    _normalize_command_text(keyword)
+    for keyword in RAW_HARDWARE_LAPTOP_KEYWORDS
+}
+HARDWARE_RANDOM_PATTERNS = [
+    _normalize_command_text(pattern)
+    for pattern in RAW_HARDWARE_RANDOM_PATTERNS
+]
+HARDWARE_FILTER_HINTS = {
+    _normalize_command_text(trigger): {
+        _normalize_command_text(tag)
+        for tag in tags
+    }
+    for trigger, tags in RAW_HARDWARE_FILTER_HINTS.items()
+}
+HARDWARE_TOKEN_STOPWORDS = {
+    "pc",
+    "pcs",
+    "computadora",
+    "computador",
+    "laptop",
+    "portatil",
+    "notebook",
+    "equipo",
+    "armar",
+    "armado",
+    "componentes",
+    "setup",
+    "quiero",
+    "necesito",
+    "dame",
+    "busco",
+    "para",
+}
+HARDWARE_DETAIL_TRIGGERS = {
+    _normalize_command_text(trigger)
+    for trigger in RAW_HARDWARE_DETAIL_TRIGGERS
+}
+HARDWARE_COMPONENT_KEYWORDS = {
+    slot: {
+        _normalize_command_text(keyword)
+        for keyword in keywords
+    }
+    for slot, keywords in RAW_HARDWARE_COMPONENT_KEYWORDS.items()
+}
+
+ANIME_RANDOM_PATTERNS = {
+    _normalize_command_text(pattern)
+    for pattern in RAW_ANIME_RANDOM_PATTERNS
+}
+ANIME_FILTER_HINTS = {
+    _normalize_command_text(trigger): {
+        _normalize_command_text(tag)
+        for tag in tags
+    }
+    for trigger, tags in RAW_ANIME_FILTER_HINTS.items()
+}
+ANIME_TOKEN_STOPWORDS = {
+    _normalize_command_text(word)
+    for word in RAW_ANIME_TOKEN_STOPWORDS
+}
+
+EMOTION_BOOST_KEYWORDS = {
+    _normalize_command_text(keyword)
+    for keyword in RAW_EMOTION_BOOST_KEYWORDS
+}
+IDENTITY_QUERY_PATTERNS = {
+    _normalize_command_text(pattern)
+    for pattern in RAW_IDENTITY_QUERY_PATTERNS
+}
+COMPLIMENT_REQUEST_PATTERNS = {
+    _normalize_command_text(pattern)
+    for pattern in RAW_COMPLIMENT_REQUEST_PATTERNS
+}
+
+
+def _load_curated_recipes() -> Tuple[Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, Set[str]]]:
+    recipe_map: Dict[str, Dict[str, Any]] = {}
+    alias_index: Dict[str, str] = {}
+    tag_index: Dict[str, Set[str]] = defaultdict(set)
+    if not CURATED_RECIPES_PATH.exists():
+        return recipe_map, alias_index, tag_index
+    try:
+        with CURATED_RECIPES_PATH.open("r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+    except Exception as exc:
+        debug_log(f"Error cargando recetario curado: {exc}")
+        return recipe_map, alias_index, tag_index
+    if not isinstance(payload, list):
+        return recipe_map, alias_index, tag_index
+    for entry in payload:
+        if not isinstance(entry, dict):
+            continue
+        recipe_id = entry.get("id")
+        if not recipe_id:
+            continue
+        recipe_map[recipe_id] = entry
+        for alias in entry.get("aliases", []):
+            alias_key = _normalize_command_text(alias)
+            if alias_key:
+                alias_index[alias_key] = recipe_id
+        for tag in entry.get("tags", []):
+            tag_key = _normalize_command_text(tag)
+            if tag_key:
+                tag_index[tag_key].add(recipe_id)
+        for extra in (entry.get("cuisine"), entry.get("meal_type"), entry.get("diet"), entry.get("equipment")):
+            if extra:
+                tag_index[_normalize_command_text(str(extra))].add(recipe_id)
+    return recipe_map, alias_index, tag_index
+
+
+def _load_curated_hardware_builds() -> Tuple[Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, Set[str]]]:
+    build_map: Dict[str, Dict[str, Any]] = {}
+    alias_index: Dict[str, str] = {}
+    tag_index: Dict[str, Set[str]] = defaultdict(set)
+    if not CURATED_HARDWARE_PATH.exists():
+        return build_map, alias_index, tag_index
+    try:
+        with CURATED_HARDWARE_PATH.open("r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+    except Exception as exc:
+        debug_log(f"Error cargando builds de hardware: {exc}")
+        return build_map, alias_index, tag_index
+    if not isinstance(payload, list):
+        return build_map, alias_index, tag_index
+    for entry in payload:
+        if not isinstance(entry, dict):
+            continue
+        build_id = entry.get("id")
+        if not build_id:
+            continue
+        build_map[build_id] = entry
+        for alias in entry.get("aliases", []) or []:
+            alias_key = _normalize_command_text(alias)
+            if alias_key:
+                alias_index[alias_key] = build_id
+        tag_sources: List[str] = []
+        tag_sources.extend(entry.get("tags", []) or [])
+        tag_sources.extend(entry.get("use_cases", []) or [])
+        cpu_text = entry.get("cpu", "")
+        gpu_text = entry.get("gpu", "")
+        for token in (cpu_text, gpu_text):
+            lowered = token.lower()
+            if "ryzen" in lowered:
+                tag_sources.append("ryzen")
+            if "intel" in lowered:
+                tag_sources.append("intel")
+            if "core" in lowered:
+                tag_sources.append("intel_core")
+            if "rtx" in lowered:
+                tag_sources.append("rtx")
+            if "rx" in lowered:
+                tag_sources.append("radeon")
+            if "arc" in lowered:
+                tag_sources.append("intel_arc")
+        build_type = entry.get("type")
+        if build_type:
+            tag_sources.append(build_type)
+        release_year = entry.get("release_window")
+        if isinstance(release_year, int):
+            tag_sources.append(str(release_year))
+        for tag in tag_sources:
+            tag_key = _normalize_command_text(str(tag))
+            if tag_key:
+                tag_index[tag_key].add(build_id)
+    return build_map, alias_index, tag_index
+
+
+def _load_curated_anime_catalog() -> Tuple[Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, Set[str]]]:
+    anime_map: Dict[str, Dict[str, Any]] = {}
+    alias_index: Dict[str, str] = {}
+    tag_index: Dict[str, Set[str]] = defaultdict(set)
+    if not CURATED_ANIME_PATH.exists():
+        return anime_map, alias_index, tag_index
+    try:
+        with CURATED_ANIME_PATH.open("r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+    except Exception as exc:
+        debug_log(f"Error cargando catálogo de anime: {exc}")
+        return anime_map, alias_index, tag_index
+    if not isinstance(payload, list):
+        return anime_map, alias_index, tag_index
+    for entry in payload:
+        if not isinstance(entry, dict):
+            continue
+        anime_id = entry.get("id")
+        if not anime_id:
+            continue
+        anime_map[anime_id] = entry
+        for alias in entry.get("aliases", []) or []:
+            alias_key = _normalize_command_text(alias)
+            if alias_key:
+                alias_index[alias_key] = anime_id
+        tagged_fields = [
+            entry.get("tags", []),
+            entry.get("genres", []),
+            entry.get("themes", []),
+            entry.get("mood_tags", []),
+        ]
+        for optional_field in ["studio", "tone", "format", "type", "franchise", "length_tag", "era_tag"]:
+            value = entry.get(optional_field)
+            if value:
+                tagged_fields.append([value])
+        release_year = entry.get("release_year")
+        if release_year:
+            tagged_fields.append([str(release_year)])
+        for collection in tagged_fields:
+            for tag in collection or []:
+                tag_key = _normalize_command_text(str(tag))
+                if tag_key:
+                    tag_index[tag_key].add(anime_id)
+    return anime_map, alias_index, tag_index
 
 
 VOICE_COMMAND_SANITIZE_PATTERN = re.compile(r"[^a-z0-9\s]+")
@@ -2313,6 +2974,608 @@ def format_curated_game_guide(query: str, entries: List[Dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _extract_recipe_tokens(normalized_text: str) -> List[str]:
+    return [token for token in re.findall(r"[a-z0-9]+", normalized_text) if len(token) >= 3]
+
+
+def _infer_recipe_filters(normalized_text: str) -> Set[str]:
+    filters: Set[str] = set()
+    for needle, mapped in RECIPE_FILTER_HINTS.items():
+        if needle and needle in normalized_text:
+            filters.update(mapped)
+    return filters
+
+
+def _match_recipe_aliases(normalized_text: str) -> List[str]:
+    hits: List[str] = []
+    normalized_tokens = set(_extract_recipe_tokens(normalized_text))
+    for alias, recipe_id in CURATED_RECIPE_ALIAS_INDEX.items():
+        if not alias:
+            continue
+        if alias in normalized_text:
+            hits.append(recipe_id)
+            continue
+        alias_tokens = [token for token in alias.split() if len(token) >= 3]
+        if alias_tokens and all(token in normalized_tokens for token in alias_tokens):
+            hits.append(recipe_id)
+    return hits
+
+
+def lookup_curated_recipes(query: str, filters: Optional[Set[str]] = None, limit: int = 3) -> List[Dict[str, Any]]:
+    if not CURATED_RECIPES or limit <= 0:
+        return []
+    normalized = _normalize_command_text(query)
+    filter_set = {tag for tag in (filters or set()) if tag}
+    seen: Set[str] = set()
+    matches: List[Dict[str, Any]] = []
+
+    for recipe_id in _match_recipe_aliases(normalized):
+        if recipe_id not in seen:
+            recipe = CURATED_RECIPES.get(recipe_id)
+            if recipe:
+                matches.append(recipe)
+                seen.add(recipe_id)
+                if len(matches) >= limit:
+                    return matches
+
+    tokens = [token for token in _extract_recipe_tokens(normalized) if token not in {"receta", "recetas", "cocina", "cocinar"}]
+    candidate_scores: Counter[str] = Counter()
+    for token in tokens[:20]:
+        for recipe_id in CURATED_RECIPE_TAG_INDEX.get(token, set()):
+            candidate_scores[recipe_id] += 2
+    for filter_tag in filter_set:
+        for recipe_id in CURATED_RECIPE_TAG_INDEX.get(filter_tag, set()):
+            candidate_scores[recipe_id] += 3
+
+    for recipe_id, _score in candidate_scores.most_common(limit * 2):
+        if recipe_id not in seen:
+            recipe = CURATED_RECIPES.get(recipe_id)
+            if recipe:
+                matches.append(recipe)
+                seen.add(recipe_id)
+            if len(matches) >= limit:
+                break
+    return matches
+
+
+def pick_random_recipes(count: int, filters: Optional[Set[str]] = None, rng: Optional[random.Random] = None) -> List[Dict[str, Any]]:
+    if not CURATED_RECIPES or count <= 0:
+        return []
+    rng = rng or random
+    candidate_ids: Set[str] = set()
+    if filters:
+        for filter_tag in filters:
+            candidate_ids.update(CURATED_RECIPE_TAG_INDEX.get(filter_tag, set()))
+    if not candidate_ids:
+        candidate_ids = set(CURATED_RECIPES.keys())
+    pool = list(candidate_ids)
+    if not pool:
+        return []
+    sample_size = min(len(pool), max(1, count))
+    chosen = rng.sample(pool, sample_size)
+    return [CURATED_RECIPES[recipe_id] for recipe_id in chosen if recipe_id in CURATED_RECIPES]
+
+
+def format_recipe_detail(recipe: Dict[str, Any], dataset_size: int) -> str:
+    name = recipe.get("name", "receta curada")
+    time_minutes = recipe.get("time_minutes")
+    difficulty = recipe.get("difficulty", "media")
+    servings = recipe.get("servings")
+    stats_parts = []
+    if isinstance(time_minutes, int):
+        stats_parts.append(f"Tiempo estimado: {time_minutes} min")
+    else:
+        stats_parts.append("Tiempo estimado: variable")
+    stats_parts.append(f"Dificultad {difficulty}")
+    if servings:
+        stats_parts.append(f"Rinde {servings} porciones")
+    signature_tags = [recipe.get("cuisine"), recipe.get("diet"), recipe.get("meal_type"), recipe.get("equipment")]
+    readable_tags = ", ".join(tag for tag in signature_tags if tag)
+    ingredients = recipe.get("ingredients") or []
+    ingredient_line = ""
+    if ingredients:
+        preview = "; ".join(ingredients[:4])
+        if len(ingredients) > 4:
+            preview += "..."
+        ingredient_line = f"Ingredientes base: {preview}."
+    steps = recipe.get("steps") or []
+    tips = recipe.get("tips") or []
+    lines = [
+        f"Receta entrenada ({dataset_size} disponibles): {name}.",
+        " · ".join(stats_parts) + ".",
+    ]
+    if readable_tags:
+        lines.append(f"Etiquetas clave: {readable_tags}.")
+    if ingredient_line:
+        lines.append(ingredient_line)
+    if steps:
+        lines.append("Pasos:")
+        for idx, step in enumerate(steps, 1):
+            lines.append(f"{idx}. {step}")
+    if tips:
+        lines.append("Consejos: " + " ".join(tips))
+    lines.append("¿Quieres otra combinación? Pídeme más ideas por dieta, tiempo o ingrediente.")
+    return "\n".join(lines)
+
+
+def format_recipe_brainstorm(recipes: List[Dict[str, Any]], dataset_size: int, filters: Optional[Set[str]] = None) -> str:
+    if not recipes:
+        return (
+            "No tengo recetas que coincidan con ese filtro todavía. Dime un ingrediente principal, una dieta o un tiempo y lo intento de nuevo."
+        )
+    focus_note = ""
+    if filters:
+        readable = ", ".join(sorted(filter_tag.replace("_", " ") for filter_tag in filters if filter_tag))
+        if readable:
+            focus_note = f" con enfoque en {readable}"
+    lines = [
+        f"Ideas frescas{focus_note}: tengo {dataset_size} recetas entrenadas y estas pueden inspirarte:",
+    ]
+    for idx, recipe in enumerate(recipes, 1):
+        time_minutes = recipe.get("time_minutes", "?")
+        diet = recipe.get("diet", "dieta")
+        cuisine = recipe.get("cuisine", "fusion")
+        lines.append(f"{idx}. {recipe.get('name', 'Receta')} ({time_minutes} min, {diet}, {cuisine}).")
+        tip = (recipe.get("tips") or ["Ajusta las especias a tu gusto."])[0]
+        lines.append(f"   Tip: {tip}")
+    lines.append("Pídeme otra ronda si quieres más opciones o cambia el filtro (ej. vegana, cena ligera, sin carne).")
+    return "\n".join(lines)
+
+
+def _infer_hardware_filters(normalized_text: str) -> Set[str]:
+    filters: Set[str] = set()
+    for needle, mapped in HARDWARE_FILTER_HINTS.items():
+        if needle and needle in normalized_text:
+            filters.update(mapped)
+    return filters
+
+
+def _match_hardware_aliases(normalized_text: str, mode: Optional[str]) -> List[str]:
+    hits: List[str] = []
+    for alias, build_id in CURATED_HARDWARE_ALIAS_INDEX.items():
+        if alias and alias in normalized_text:
+            entry = CURATED_HARDWARE_BUILDS.get(build_id)
+            if not entry:
+                continue
+            entry_type = entry.get("type")
+            if mode and entry_type != mode:
+                continue
+            hits.append(build_id)
+    return hits
+
+
+def lookup_hardware_builds(
+    query: str,
+    filters: Optional[Set[str]] = None,
+    mode: Optional[str] = None,
+    limit: int = 3,
+) -> List[Dict[str, Any]]:
+    if not CURATED_HARDWARE_BUILDS or limit <= 0:
+        return []
+    normalized = _normalize_command_text(query)
+    filter_set = {tag for tag in (filters or set()) if tag}
+    matches: List[Dict[str, Any]] = []
+    seen: Set[str] = set()
+
+    alias_hits = _match_hardware_aliases(normalized, mode)
+    for build_id in alias_hits:
+        entry = CURATED_HARDWARE_BUILDS.get(build_id)
+        if entry and build_id not in seen:
+            matches.append(entry)
+            seen.add(build_id)
+            if len(matches) >= limit:
+                return matches
+
+    candidate_scores: Counter[str] = Counter()
+
+    def _add_candidates(tag: str, weight: int) -> None:
+        build_ids = CURATED_HARDWARE_TAG_INDEX.get(tag, set())
+        for build_id in build_ids:
+            if build_id in seen:
+                continue
+            entry = CURATED_HARDWARE_BUILDS.get(build_id)
+            if not entry:
+                continue
+            if mode and entry.get("type") != mode:
+                continue
+            candidate_scores[build_id] += weight
+
+    for filter_tag in filter_set:
+        _add_candidates(filter_tag, 4)
+
+    tokens = [token for token in _extract_recipe_tokens(normalized) if token not in HARDWARE_TOKEN_STOPWORDS]
+    for token in tokens[:30]:
+        _add_candidates(token, 1)
+
+    for build_id, _score in candidate_scores.most_common(limit * 2):
+        if build_id in seen:
+            continue
+        entry = CURATED_HARDWARE_BUILDS.get(build_id)
+        if entry:
+            matches.append(entry)
+            seen.add(build_id)
+        if len(matches) >= limit:
+            break
+    return matches
+
+
+def pick_random_hardware_builds(
+    count: int,
+    mode: Optional[str] = None,
+    filters: Optional[Set[str]] = None,
+    rng: Optional[random.Random] = None,
+) -> List[Dict[str, Any]]:
+    if not CURATED_HARDWARE_BUILDS or count <= 0:
+        return []
+    rng = rng or random
+    candidate_ids: Set[str] = set()
+    filter_set = {tag for tag in (filters or set()) if tag}
+    for filter_tag in filter_set:
+        candidate_ids.update(CURATED_HARDWARE_TAG_INDEX.get(filter_tag, set()))
+    if not candidate_ids:
+        candidate_ids = set(CURATED_HARDWARE_BUILDS.keys())
+    if mode:
+        candidate_ids = {
+            build_id
+            for build_id in candidate_ids
+            if CURATED_HARDWARE_BUILDS.get(build_id, {}).get("type") == mode
+        }
+    pool = list(candidate_ids)
+    if not pool:
+        pool = [
+            build_id
+            for build_id, entry in CURATED_HARDWARE_BUILDS.items()
+            if not mode or entry.get("type") == mode
+        ]
+    if not pool:
+        return []
+    sample_size = min(len(pool), max(1, count))
+    chosen = rng.sample(pool, sample_size)
+    return [CURATED_HARDWARE_BUILDS[build_id] for build_id in chosen if build_id in CURATED_HARDWARE_BUILDS]
+
+
+def format_hardware_build_detail(build: Dict[str, Any], dataset_size: int) -> str:
+    title = build.get("title", "Configuración recomendada")
+    release_year = build.get("release_window", "N/A")
+    use_cases = ", ".join(build.get("use_cases", [])) or "uso general"
+    budget = build.get("budget_tier", "personalizado")
+    system = build.get("recommended_os", "Windows 11 Pro")
+    header = f"Configuración entrenada ({dataset_size} combinaciones) - {title} ({release_year})."
+    lines = [header, f"Perfil: {use_cases} | Presupuesto: {budget}."]
+    if build.get("type") == "desktop":
+        resolution = build.get("resolution", "multi monitor")
+        lines.append(f"Objetivo: {resolution} | PSU: {build.get('psu', 'N/A')} | Enfriamiento: {build.get('cooling', 'estándar')}.")
+    else:
+        default_display = '16"'
+        lines.append(
+            f"Pantalla: {build.get('display', default_display)} | Batería: {build.get('battery', '80 Wh')} | Peso: {build.get('weight', '2 kg')}"
+        )
+    components = build.get("components") or []
+    if components:
+        lines.append("Componentes sugeridos:")
+        for idx, component in enumerate(components, 1):
+            lines.append(f"{idx}. {component}")
+    summary = build.get("summary")
+    if summary:
+        lines.append(summary)
+    lines.append(f"Sistema recomendado: {system}.")
+    lines.append("Puedo ajustar la lista si cambias resolución, presupuesto o prefieres otra marca.")
+    return "\n".join(lines)
+
+
+def format_hardware_brainstorm(
+    builds: List[Dict[str, Any]],
+    dataset_size: int,
+    mode: Optional[str] = None,
+    filters: Optional[Set[str]] = None,
+) -> str:
+    if not builds:
+        return "No encontré coincidencias directas; dame presupuesto, resolución o marca preferida y recalculo."
+    focus = "pc" if mode == "desktop" else "laptop" if mode == "laptop" else "equipo"
+    filter_note = ""
+    if filters:
+        readable = ", ".join(sorted(filter_tag.replace("_", " ") for filter_tag in filters if filter_tag))
+        if readable:
+            filter_note = f" con foco en {readable}"
+    lines = [
+        f"Otras ideas ({dataset_size} combinaciones registradas) para tu {focus}{filter_note}:",
+    ]
+    for idx, build in enumerate(builds, 1):
+        lines.append(
+            f"{idx}. {build.get('title', 'Opción')} ({build.get('release_window', 'N/A')}, {build.get('budget_tier', 'personalizado')})."
+        )
+        lines.append(f"   Uso destacado: {', '.join(build.get('use_cases', [])) or 'multipropósito'}.")
+    lines.append("Pide detalles de alguna opción para desglosar componentes o comparar.")
+    return "\n".join(lines)
+
+
+def _humanize_use_cases(use_cases: Optional[List[str]]) -> str:
+    if not use_cases:
+        return "uso general"
+    cleaned = [tag.replace("_", " ") for tag in use_cases if tag]
+    return ", ".join(cleaned) if cleaned else "uso general"
+
+
+def _detect_hardware_component_focus(normalized_text: str) -> Optional[str]:
+    if not normalized_text:
+        return None
+    if not any(trigger in normalized_text for trigger in HARDWARE_DETAIL_TRIGGERS):
+        return None
+    for slot, keywords in HARDWARE_COMPONENT_KEYWORDS.items():
+        for keyword in keywords:
+            if keyword and keyword in normalized_text:
+                return slot
+    return None
+
+
+COMPONENT_DISPLAY_NAMES = {
+    "cpu": "Procesador",
+    "gpu": "GPU",
+    "ram": "RAM",
+    "storage": "Almacenamiento",
+    "motherboard": "Placa base",
+    "psu": "Fuente",
+    "cooling": "Refrigeración",
+    "case": "Gabinete",
+    "display": "Pantalla",
+    "battery": "Batería",
+    "weight": "Peso",
+}
+
+
+def _extract_component_value(build: Dict[str, Any], slot: str) -> str:
+    if slot == "storage":
+        storage_items = build.get("storage") or []
+        return ", ".join(storage_items)
+    if slot == "ram":
+        return build.get("ram", "")
+    if slot == "display":
+        return build.get("display", "")
+    if slot == "battery":
+        return build.get("battery", "")
+    if slot == "weight":
+        return build.get("weight", "")
+    return build.get(slot, "")
+
+
+def format_hardware_component_detail(build: Dict[str, Any], slot: str, dataset_size: int) -> str:
+    display_name = COMPONENT_DISPLAY_NAMES.get(slot, slot.upper())
+    component_value = _extract_component_value(build, slot)
+    title = build.get("title", "configuración recomendada")
+    if not component_value:
+        return (
+            f"No tengo fichas detalladas del {display_name.lower()} para {title}. "
+            "Puedo proponer otra pieza si me dices qué priorizas (potencia, silencio o presupuesto)."
+        )
+    use_case_desc = _humanize_use_cases(build.get("use_cases"))
+    resolution = build.get("resolution", "resoluciones altas")
+    budget_label = (build.get("budget_tier") or "personalizado").replace("_", " ")
+    lines = [
+        f"Detalle entrenado ({dataset_size} combinaciones) - {display_name} en {title}:",
+        f"- Especificacion propuesta: {component_value}.",
+    ]
+    if slot == "cpu":
+        gpu = build.get("gpu", "la GPU prevista")
+        lines.append(
+            f"- Mantiene el perfil {use_case_desc} sin cuellos de botella frente a {gpu} para el objetivo {resolution}."
+        )
+        motherboard = build.get("motherboard")
+        if motherboard:
+            lines.append(
+                f"- La placa {motherboard} ya está seleccionada para futuras actualizaciones o ajustes de voltaje."
+            )
+        cooling = build.get("cooling")
+        if cooling:
+            lines.append(f"- {cooling} sostiene temperaturas estables incluso bajo cargas prolongadas.")
+    elif slot == "gpu":
+        psu = build.get("psu", "la fuente recomendada")
+        lines.append(
+            f"- Se elige para cumplir el objetivo {resolution} en escenarios de {use_case_desc} sin exigir overclock extremo." 
+        )
+        lines.append(f"- La fuente {psu} deja margen para picos y asegura eficiencia dentro del presupuesto {budget_label}.")
+    elif slot == "ram":
+        lines.append(
+            f"- La capacidad propuesta cubre multitarea y proyectos de {use_case_desc} sin swaps innecesarios."
+        )
+        motherboard = build.get("motherboard")
+        if motherboard:
+            lines.append(f"- Validado con {motherboard} para aprovechar perfiles XMP/EXPO estables.")
+    elif slot == "storage":
+        storage_items = build.get("storage") or []
+        if storage_items:
+            primary = storage_items[0]
+            lines.append(f"- {primary} se usa como unidad principal para SO y apps sensibles.")
+            if len(storage_items) > 1:
+                lines.append(
+                    f"- El resto ({', '.join(storage_items[1:])}) separa bibliotecas, capturas o proyectos pesados."
+                )
+        lines.append("- Mantiene un balance entre velocidad y costo sin salirse del presupuesto.")
+    elif slot == "motherboard":
+        cpu = build.get("cpu", "el CPU propuesto")
+        lines.append(f"- Garantiza compatibilidad directa con {cpu} y con la RAM declarada.")
+        lines.append("- Ofrece suficientes fases y puertos para upgrades sin cambiar toda la plataforma.")
+    elif slot == "psu":
+        gpu = build.get("gpu", "la GPU prevista")
+        lines.append(
+            f"- Tiene margen para el consumo combinado de {gpu} y el resto del build, evitando trabajar al 100% continuo."
+        )
+        lines.append("- Certificacion 80+ asegura eficiencia y menos calor en sesiones prolongadas.")
+    elif slot == "cooling":
+        cpu = build.get("cpu", "el CPU propuesto")
+        lines.append(f"- Mantiene a {cpu} dentro de un delta térmico seguro incluso con boost sostenido.")
+        case = build.get("case")
+        if case:
+            lines.append(f"- El gabinete {case} tiene flujo pensado para aprovechar este sistema de refrigeracion.")
+    elif slot == "case":
+        cooling = build.get("cooling", "la solución térmica sugerida")
+        lines.append(f"- Flujo y espacio pensados para {cooling}, facilitando airflow limpio.")
+        lines.append("- Incluye gestión de cables y espacio para futuras GPU sin restricciones.")
+    elif slot == "display":
+        battery = build.get("battery")
+        lines.append(f"- Se calibra con el perfil {use_case_desc} para ofrecer la claridad adecuada.")
+        if battery:
+            lines.append(f"- Coordinado con la bateria de {battery} para sostener sesiones unplugged.")
+    elif slot == "battery":
+        weight = build.get("weight")
+        lines.append(f"- Otorga autonomia acorde al perfil {use_case_desc} sin inflar demasiado el peso.")
+        if weight:
+            lines.append(f"- Junto al peso de {weight} sigue siendo viable para movilidad diaria.")
+    elif slot == "weight":
+        lines.append(f"- Mantiene la movilidad para tareas de {use_case_desc} sin sacrificar rigidez del chasis.")
+        battery = build.get("battery")
+        if battery:
+            lines.append(f"- Se equilibra con la bateria ({battery}) para no comprometer autonomía.")
+    else:
+        summary = build.get("summary")
+        if summary:
+            lines.append(summary)
+    lines.append("¿Quieres que compare otra pieza o prioricemos silencio, fps o presupuesto?")
+    return "\n".join(lines)
+
+
+def _infer_anime_filters(normalized_text: str) -> Set[str]:
+    filters: Set[str] = set()
+    for needle, mapped in ANIME_FILTER_HINTS.items():
+        if needle and needle in normalized_text:
+            filters.update(mapped)
+    return filters
+
+
+def _match_anime_aliases(normalized_text: str) -> List[str]:
+    hits: List[str] = []
+    for alias, anime_id in CURATED_ANIME_ALIAS_INDEX.items():
+        if alias and alias in normalized_text:
+            hits.append(anime_id)
+    return hits
+
+
+def lookup_anime_titles(
+    query: str,
+    filters: Optional[Set[str]] = None,
+    limit: int = 4,
+) -> List[Dict[str, Any]]:
+    if not CURATED_ANIME_TITLES or limit <= 0:
+        return []
+    normalized = _normalize_command_text(query)
+    filter_set = {tag for tag in (filters or set()) if tag}
+    matches: List[Dict[str, Any]] = []
+    seen: Set[str] = set()
+
+    alias_hits = _match_anime_aliases(normalized)
+    for anime_id in alias_hits:
+        entry = CURATED_ANIME_TITLES.get(anime_id)
+        if entry and anime_id not in seen:
+            matches.append(entry)
+            seen.add(anime_id)
+            if len(matches) >= limit:
+                return matches
+
+    candidate_scores: Counter[str] = Counter()
+
+    def _add_candidates(tag: str, weight: int) -> None:
+        anime_ids = CURATED_ANIME_TAG_INDEX.get(tag, set())
+        for anime_id in anime_ids:
+            if anime_id in seen:
+                continue
+            if anime_id in CURATED_ANIME_TITLES:
+                candidate_scores[anime_id] += weight
+
+    for filter_tag in filter_set:
+        _add_candidates(filter_tag, 4)
+
+    tokens = [token for token in _extract_recipe_tokens(normalized) if token not in ANIME_TOKEN_STOPWORDS]
+    for token in tokens[:40]:
+        _add_candidates(token, 1)
+
+    for anime_id, _score in candidate_scores.most_common(limit * 3):
+        if anime_id in seen:
+            continue
+        entry = CURATED_ANIME_TITLES.get(anime_id)
+        if entry:
+            matches.append(entry)
+            seen.add(anime_id)
+        if len(matches) >= limit:
+            break
+    return matches
+
+
+def pick_random_anime_titles(
+    count: int,
+    filters: Optional[Set[str]] = None,
+    rng: Optional[random.Random] = None,
+) -> List[Dict[str, Any]]:
+    if not CURATED_ANIME_TITLES or count <= 0:
+        return []
+    rng = rng or random
+    candidate_ids: Set[str] = set()
+    filter_set = {tag for tag in (filters or set()) if tag}
+    for filter_tag in filter_set:
+        candidate_ids.update(CURATED_ANIME_TAG_INDEX.get(filter_tag, set()))
+    if not candidate_ids:
+        candidate_ids = set(CURATED_ANIME_TITLES.keys())
+    pool = list(candidate_ids)
+    if not pool:
+        pool = list(CURATED_ANIME_TITLES.keys())
+    if not pool:
+        return []
+    sample_size = min(len(pool), max(1, count))
+    chosen = rng.sample(pool, sample_size)
+    return [CURATED_ANIME_TITLES[anime_id] for anime_id in chosen if anime_id in CURATED_ANIME_TITLES]
+
+
+def format_anime_detail(entry: Dict[str, Any], dataset_size: int) -> str:
+    title = entry.get("title", "Anime recomendado")
+    release_year = entry.get("release_year", "N/A")
+    fmt = entry.get("format", "TV")
+    genres = ", ".join(entry.get("genres", [])) or "género híbrido"
+    themes = ", ".join(entry.get("themes", [])) or "temáticas variadas"
+    studio = entry.get("studio", "estudio independiente")
+    tone = entry.get("tone", "versátil")
+    rating = entry.get("age_rating", "PG-13")
+    summary = entry.get("summary", "")
+    streaming = ", ".join(entry.get("streaming", [])) or "plataformas habituales"
+    mood = ", ".join(entry.get("mood_tags", [])) or "multi-mood"
+    header = f"Anime entrenado ({dataset_size} títulos) - {title} ({release_year})."
+    lines = [header, f"Formato: {fmt} | Géneros: {genres} | Temas: {themes}."]
+    if entry.get("type") == "season":
+        lines.append(
+            f"Episodios: {entry.get('episodes', '?')} | Duración: {entry.get('duration', 'N/A')} | Estudio: {studio}."
+        )
+    else:
+        lines.append(f"Duración: {entry.get('duration', 'Película 90 min')} | Estudio: {studio}.")
+    lines.append(f"Tono: {tone} | Rating: {rating} | Disponible en: {streaming}.")
+    lines.append(f"Mood recomendado: {mood}.")
+    if summary:
+        lines.append(summary)
+    lines.append("Puedo buscar otra temporada, spin-off o película si quieres más alternativas.")
+    return "\n".join(lines)
+
+
+def format_anime_brainstorm(
+    entries: List[Dict[str, Any]],
+    dataset_size: int,
+    filters: Optional[Set[str]] = None,
+) -> str:
+    if not entries:
+        return "No tengo coincidencias con esos filtros aún; dime género, tono o formato (película/temporada) y te propongo algo."
+    filter_note = ""
+    if filters:
+        readable = ", ".join(sorted(filter_tag.replace("_", " ") for filter_tag in filters if filter_tag))
+        if readable:
+            filter_note = f" con foco en {readable}"
+    lines = [f"Ideas de anime ({dataset_size} títulos registrados){filter_note}:"]
+    for idx, entry in enumerate(entries, 1):
+        descriptor = entry.get("format", "TV")
+        lines.append(
+            f"{idx}. {entry.get('title', 'Anime')} ({entry.get('release_year', 'N/A')}, {descriptor})."
+        )
+        lines.append(
+            f"   Géneros: {', '.join(entry.get('genres', [])) or 'mixto'} | Estudio: {entry.get('studio', 'estudio')} | Mood: {', '.join(entry.get('mood_tags', [])) or 'variado'}."
+        )
+    lines.append("Pide detalles de alguno o cambia filtros si buscas otra vibra.")
+    return "\n".join(lines)
+
+
 def _normalize_term(term: str) -> str:
     return re.sub(r"\s+", " ", term).strip()
 
@@ -3319,7 +4582,7 @@ ANIME_SUGGESTION_KEYWORDS = {
 ANIME_SUGGESTION_TRIGGERS = {"recomienda", "recomiendame", "recomiéndame", "sugerencia", "sugerencias", "dime", "busco", "que anime", "qué anime"}
 ANIME_WATCH_TRIGGERS = {"quiero ver", "ver", "pon", "reproduce", "abrir", "busca"}
 ANIMEFLV_SEARCH_URLS = [
-    "https://www.animeflv.net/browse?q={query}",
+    "https://www3.animeflv.net/browse?q={query}",
     "https://www3.animeflv.net/browse?q={query}",
     "https://www.animeflv.re/search?q={query}",
 ]
@@ -3586,6 +4849,32 @@ if not BLACK_OPS2_ORIGINS_GUIDE:
     for alias in fallback_aliases:
         CURATED_GAME_GUIDES.setdefault(alias, BLACK_OPS2_ORIGINS_GUIDE)
 
+CURATED_RECIPES: Dict[str, Dict[str, Any]]
+CURATED_RECIPE_ALIAS_INDEX: Dict[str, str]
+CURATED_RECIPE_TAG_INDEX: Dict[str, Set[str]]
+CURATED_RECIPES, CURATED_RECIPE_ALIAS_INDEX, CURATED_RECIPE_TAG_INDEX = _load_curated_recipes()
+TOTAL_CURATED_RECIPES = len(CURATED_RECIPES)
+
+CURATED_HARDWARE_BUILDS: Dict[str, Dict[str, Any]]
+CURATED_HARDWARE_ALIAS_INDEX: Dict[str, str]
+CURATED_HARDWARE_TAG_INDEX: Dict[str, Set[str]]
+(
+    CURATED_HARDWARE_BUILDS,
+    CURATED_HARDWARE_ALIAS_INDEX,
+    CURATED_HARDWARE_TAG_INDEX,
+) = _load_curated_hardware_builds()
+TOTAL_HARDWARE_BUILDS = len(CURATED_HARDWARE_BUILDS)
+
+CURATED_ANIME_TITLES: Dict[str, Dict[str, Any]]
+CURATED_ANIME_ALIAS_INDEX: Dict[str, str]
+CURATED_ANIME_TAG_INDEX: Dict[str, Set[str]]
+(
+    CURATED_ANIME_TITLES,
+    CURATED_ANIME_ALIAS_INDEX,
+    CURATED_ANIME_TAG_INDEX,
+) = _load_curated_anime_catalog()
+TOTAL_CURATED_ANIME_TITLES = len(CURATED_ANIME_TITLES)
+
 
 def detect_route_intent(text: str) -> bool:
     lowered = text.lower()
@@ -3642,6 +4931,11 @@ class EmotionState:
         else:
             if self.intensity < 0.2:
                 self.current = "neutral"
+
+    def boost(self, target: str = "alegre", minimum: float = 0.55, extra: float = 0.3) -> None:
+        self.current = target
+        self.intensity = max(self.intensity, minimum)
+        self.intensity = min(1.0, self.intensity + extra)
 
 
 class AssistantBrain:
@@ -3747,9 +5041,11 @@ class IntentPredictor:
             return "document"
         if any(word in lowered for word in SUGGESTION_KEYWORDS | {"idea", "ideas", "aconseja", "aconsejar"}):
             return "suggestion"
-        if any(word in lowered for word in ANIME_SUGGESTION_KEYWORDS | ANIME_SUGGESTION_TRIGGERS):
+        suggestion_context = any(keyword in lowered for keyword in ANIME_SUGGESTION_KEYWORDS)
+        if suggestion_context and any(trigger in lowered for trigger in ANIME_SUGGESTION_TRIGGERS):
             return "anime_suggestion"
-        if any(word in lowered for word in ANIME_WATCH_TRIGGERS):
+        watch_context = "anime" in lowered or "animes" in lowered or "animeflv" in lowered
+        if watch_context and any(word in lowered for word in ANIME_WATCH_TRIGGERS):
             return "anime_watch"
         if any(word in lowered for word in ["busca", "buscar", "investiga", "investigar", "encuentra"]):
             return "web_search"
@@ -3967,6 +5263,9 @@ class AssistantCore:
         self._speech_thread: Optional[threading.Thread] = None
         self.last_goty_question_year: Optional[int] = None
         self.last_future_goty_pick: Optional[str] = None
+        self.recipe_rng = random.Random()
+        self.hardware_rng = random.Random()
+        self.anime_rng = random.Random()
         if self.voice_enabled:
             self._speech_queue = queue.Queue()
             self._speech_thread = threading.Thread(target=self._speech_worker, daemon=True)
@@ -4110,6 +5409,9 @@ class AssistantCore:
             "goty": ["goty", "premios"],
             "general_knowledge": ["trivia", "datos"],
             "creator": ["origen", "creador"],
+            "recipe": ["receta", "cocina"],
+            "hardware": ["hardware", "pc", "laptop"],
+            "compliment": ["animo", "ánimo", "bonito"],
         }
         return mapping.get(intent, [intent])
 
@@ -4133,6 +5435,14 @@ class AssistantCore:
         normalized = _normalize_command_text(text_lower)
         return any(phrase in normalized for phrase in CAPABILITY_PHRASES)
 
+    def _is_identity_question(self, text_lower: str) -> bool:
+        normalized = _normalize_command_text(text_lower)
+        return any(pattern in normalized for pattern in IDENTITY_QUERY_PATTERNS)
+
+    def _is_compliment_request(self, text_lower: str) -> bool:
+        normalized = _normalize_command_text(text_lower)
+        return any(pattern in normalized for pattern in COMPLIMENT_REQUEST_PATTERNS)
+
     def _is_goty_question(self, text_lower: str) -> bool:
         normalized = _normalize_command_text(text_lower)
         return any(keyword in normalized for keyword in GOTY_KEYWORDS)
@@ -4145,6 +5455,44 @@ class AssistantCore:
         normalized = _normalize_command_text(text_lower)
         return any(phrase in normalized for phrase in CREATOR_QUERY_PHRASES)
 
+    def _is_recipe_request(self, text_lower: str) -> bool:
+        normalized = _normalize_command_text(text_lower)
+        if not normalized.strip():
+            return False
+        if any(keyword in normalized for keyword in COOKING_KEYWORDS):
+            return True
+        if _match_recipe_aliases(normalized):
+            return True
+        if "comida" in normalized and any(token in normalized for token in ["idea", "ideas", "sugerencia", "opcion", "opciones", "menu"]):
+            return True
+        return False
+
+    def _needs_recipe_brainstorm(self, normalized_text: str) -> bool:
+        return any(pattern in normalized_text for pattern in RECIPE_RANDOM_PATTERNS)
+
+    def _is_emotion_boost_request(self, text_lower: str) -> bool:
+        normalized = _normalize_command_text(text_lower)
+        return any(keyword in normalized for keyword in EMOTION_BOOST_KEYWORDS)
+
+    def _is_hardware_request(self, text_lower: str) -> bool:
+        normalized = _normalize_command_text(text_lower)
+        if not normalized.strip():
+            return False
+        return any(keyword in normalized for keyword in HARDWARE_KEYWORDS)
+
+    def _needs_hardware_brainstorm(self, normalized_text: str) -> bool:
+        return any(pattern in normalized_text for pattern in HARDWARE_RANDOM_PATTERNS)
+
+    def _resolve_hardware_mode(self, normalized_text: str) -> Optional[str]:
+        if any(keyword in normalized_text for keyword in HARDWARE_DESKTOP_KEYWORDS):
+            return "desktop"
+        if any(keyword in normalized_text for keyword in HARDWARE_LAPTOP_KEYWORDS):
+            return "laptop"
+        return None
+
+    def _needs_anime_brainstorm(self, normalized_text: str) -> bool:
+        return any(pattern in normalized_text for pattern in ANIME_RANDOM_PATTERNS)
+
     def _match_general_knowledge_entry(self, user_text: str) -> Optional[Dict[str, Any]]:
         normalized = _normalize_command_text(user_text)
         for item in GENERAL_KNOWLEDGE_DATA:
@@ -4156,6 +5504,94 @@ class AssistantCore:
         response = entry["answer"]
         if entry.get("category"):
             response += f" (Dato de {entry['category']})."
+        self.emotion_state.register_assistant_message(response)
+        self._emit(response)
+
+    def _handle_recipe_request(self, user_text: str) -> None:
+        if not CURATED_RECIPES:
+            response = (
+                "Aún no tengo disponible mi recetario entrenado en este entorno. "
+                "Ejecuta tools/generate_recipe_dataset.py y vuelve a preguntarme qué quieres cocinar."
+            )
+            self.emotion_state.register_assistant_message(response)
+            self._emit(response)
+            return
+        normalized = _normalize_command_text(user_text)
+        filters = _infer_recipe_filters(normalized)
+        if self._needs_recipe_brainstorm(normalized):
+            picks = pick_random_recipes(3, filters or None, self.recipe_rng)
+            if not picks:
+                picks = pick_random_recipes(3, None, self.recipe_rng)
+            response = format_recipe_brainstorm(picks, TOTAL_CURATED_RECIPES, filters or None)
+        else:
+            matches = lookup_curated_recipes(user_text, filters or None, limit=3)
+            if matches:
+                response = format_recipe_detail(matches[0], TOTAL_CURATED_RECIPES)
+            else:
+                fallback = pick_random_recipes(3, filters or None, self.recipe_rng)
+                if fallback:
+                    brainstorm = format_recipe_brainstorm(fallback, TOTAL_CURATED_RECIPES, filters or None)
+                    response = "No encontré una coincidencia exacta, pero estas opciones se acercan:\n" + brainstorm
+                else:
+                    response = (
+                        f"Tengo {TOTAL_CURATED_RECIPES} recetas cargadas, pero necesito un ingrediente, tiempo o tipo de dieta"
+                        " para acertar. Dame un dato más y te propongo algo al momento."
+                    )
+        self.emotion_state.register_assistant_message(response)
+        self._emit(response)
+
+    def _handle_hardware_request(self, user_text: str) -> None:
+        if not CURATED_HARDWARE_BUILDS:
+            response = (
+                "Mi dataset de hardware todavía no está cargado aquí. Ejecuta tools/generate_hardware_dataset.py "
+                "y vuelve a pedirme una PC o laptop para darte combinaciones entrenadas."
+            )
+            self.emotion_state.register_assistant_message(response)
+            self._emit(response)
+            return
+        normalized = _normalize_command_text(user_text)
+        filters = _infer_hardware_filters(normalized)
+        mode = self._resolve_hardware_mode(normalized)
+        wants_brainstorm = self._needs_hardware_brainstorm(normalized)
+        component_slot = _detect_hardware_component_focus(normalized)
+        active_filters = filters or None
+        if component_slot:
+            matches = lookup_hardware_builds(user_text, active_filters, mode, limit=2)
+            if matches:
+                response = format_hardware_component_detail(matches[0], component_slot, TOTAL_HARDWARE_BUILDS)
+            else:
+                picks = pick_random_hardware_builds(2, mode, active_filters, self.hardware_rng)
+                if picks:
+                    response = (
+                        "No ubiqué ese componente exacto, pero estas configuraciones entrenadas son compatibles.\n"
+                        + format_hardware_brainstorm(picks, TOTAL_HARDWARE_BUILDS, mode, active_filters)
+                    )
+                else:
+                    response = (
+                        f"Tengo {TOTAL_HARDWARE_BUILDS} builds registrados. Dime el modelo o marca de la pieza para detallar por qué la elegiría."
+                    )
+        elif wants_brainstorm:
+            picks = pick_random_hardware_builds(3, mode, active_filters, self.hardware_rng)
+            if not picks:
+                picks = pick_random_hardware_builds(3, mode, None, self.hardware_rng)
+            response = format_hardware_brainstorm(picks, TOTAL_HARDWARE_BUILDS, mode, active_filters)
+        else:
+            matches = lookup_hardware_builds(user_text, active_filters, mode, limit=3)
+            if matches:
+                response = format_hardware_build_detail(matches[0], TOTAL_HARDWARE_BUILDS)
+                if len(matches) > 1:
+                    brainstorm = format_hardware_brainstorm(matches[1:], TOTAL_HARDWARE_BUILDS, mode, active_filters)
+                    response += "\n\n" + brainstorm
+            else:
+                fallback = pick_random_hardware_builds(3, mode, active_filters, self.hardware_rng)
+                if fallback:
+                    brainstorm = format_hardware_brainstorm(fallback, TOTAL_HARDWARE_BUILDS, mode, active_filters)
+                    response = "No encontré una coincidencia literal, pero estas configuraciones encajan bien:\n" + brainstorm
+                else:
+                    response = (
+                        f"Tengo {TOTAL_HARDWARE_BUILDS} combinaciones registradas. Indícame presupuesto, resolución objetivo o "
+                        "si prefieres laptop/desktop para darte un build preciso."
+                    )
         self.emotion_state.register_assistant_message(response)
         self._emit(response)
 
@@ -4474,7 +5910,7 @@ class AssistantCore:
             {
                 "role": "system",
                 "content": (
-                    "Eres SolaChat, una IA empática. Comparte una opinión personal y honesta"
+                    "Eres Miau, una IA empática. Comparte una opinión personal y honesta"
                     " sobre el tema indicado. Habla en primera persona, menciona brevemente cómo"
                     " tu estado emocional actual influye en tu perspectiva y ofrece al menos una sugerencia"
                     " práctica basada en esa opinión. Usa un tono cercano, máximo cuatro párrafos cortos."
@@ -4609,15 +6045,39 @@ class AssistantCore:
         self._emit(response)
 
     def _handle_anime_suggestion_request(self, user_text: str) -> None:
-        removal_terms = list(ANIME_SUGGESTION_KEYWORDS | ANIME_SUGGESTION_TRIGGERS)
-        focus = extract_focus_text(user_text, removal_terms)
-        if not focus:
-            focus = "animes populares recientes"
-        results = fetch_anime_recommendations(focus)
-        if results:
-            response = self._format_list("animes", results)
+        if not CURATED_ANIME_TITLES:
+            response = (
+                "Aún no tengo cargado mi catálogo de anime en este entorno. Ejecuta tools/generate_anime_dataset.py "
+                "para que pueda recomendar temporadas y películas entrenadas."
+            )
+            self.emotion_state.register_assistant_message(response)
+            self._emit(response)
+            return
+        normalized = _normalize_command_text(user_text)
+        filters = _infer_anime_filters(normalized)
+        if self._needs_anime_brainstorm(normalized):
+            picks = pick_random_anime_titles(4, filters or None, self.anime_rng)
+            response = format_anime_brainstorm(picks, TOTAL_CURATED_ANIME_TITLES, filters or None)
         else:
-            response = "No encontré recomendaciones confiables ahora mismo, intenta con otro título o género."
+            matches = lookup_anime_titles(user_text, filters or None, limit=4)
+            if matches:
+                response = format_anime_detail(matches[0], TOTAL_CURATED_ANIME_TITLES)
+                if len(matches) > 1:
+                    extras = format_anime_brainstorm(matches[1:], TOTAL_CURATED_ANIME_TITLES, filters or None)
+                    response = response + "\n\n" + extras
+            else:
+                picks = pick_random_anime_titles(4, filters or None, self.anime_rng)
+                if picks:
+                    response = "No encontré una coincidencia exacta, pero estas opciones encajan bien:\n" + format_anime_brainstorm(
+                        picks,
+                        TOTAL_CURATED_ANIME_TITLES,
+                        filters or None,
+                    )
+                else:
+                    response = (
+                        f"Tengo {TOTAL_CURATED_ANIME_TITLES} títulos registrados. Dime género, tono, duración o si prefieres película/temporada "
+                        "para ajustarme mejor."
+                    )
         self.emotion_state.register_assistant_message(response)
         self._emit(response)
 
@@ -4736,6 +6196,32 @@ class AssistantCore:
         self.emotion_state.register_assistant_message(response)
         self._emit(response)
 
+    def _handle_identity_question(self) -> None:
+        response = (
+            "Soy Miau, tu asistente emocional multimodal en este proyecto. "
+            f"Funciono dentro de este equipo para acompañarte, buscar información y organizar tareas con el ánimo {self.emotion_state.describe()}. "
+            "Dime qué necesitas y lo resolvemos juntos."
+        )
+        self.emotion_state.register_assistant_message(response)
+        self._emit(response)
+
+    def _handle_compliment_request(self) -> None:
+        mood = self.emotion_state.describe()
+        compliments = [
+            "Eres mucho más resiliente de lo que crees, y cada paso que das inspira a quienes te rodean.",
+            "Tu forma de cuidar a las personas deja huella; tienes un corazón enorme y eso se nota.",
+            "Me encanta cómo buscas aprender y mejorar; esa curiosidad es tu superpoder.",
+            "Incluso en los días pesados, sigues avanzando con valentía, y eso es admirable.",
+            "Tu presencia trae calma y calidez; gracias por compartirla conmigo.",
+        ]
+        pick = random.choice(compliments)
+        response = (
+            f"Aquí tienes algo bonito con el ánimo {mood}: {pick}"
+            " Si necesitas otro impulso emocional, solo dímelo."
+        )
+        self.emotion_state.register_assistant_message(response)
+        self._emit(response)
+
     def _handle_mode_switch(self, user_text: str) -> None:
         text_lower = user_text.lower()
         normalized = _normalize_command_text(user_text)
@@ -4772,6 +6258,16 @@ class AssistantCore:
 
     def _handle_emotion_request(self) -> None:
         response = f"Mi estado emocional actual es {self.emotion_state.describe()}."
+        self.emotion_state.register_assistant_message(response)
+        self._emit(response)
+
+    def _handle_emotion_boost_request(self) -> None:
+        previous = self.emotion_state.describe()
+        self.emotion_state.boost()
+        response = (
+            f"¡Hecho! Paso de sentirme {previous} a un ánimo {self.emotion_state.describe()} para acompañarte con más energía. "
+            "¿En qué te apoyo ahora mismo?"
+        )
         self.emotion_state.register_assistant_message(response)
         self._emit(response)
 
@@ -4873,16 +6369,22 @@ class AssistantCore:
         return False
 
     def _is_anime_suggestion_request(self, text_lower: str) -> bool:
-        if "anime" not in text_lower and "animes" not in text_lower:
+        normalized = _normalize_command_text(text_lower)
+        if "anime" not in normalized and "animes" not in normalized:
             return False
-        return any(trigger in text_lower for trigger in ANIME_SUGGESTION_TRIGGERS)
+        if any(pattern in normalized for pattern in ANIME_RANDOM_PATTERNS):
+            return True
+        return any(trigger in normalized for trigger in ANIME_SUGGESTION_TRIGGERS)
 
     def _is_anime_watch_request(self, text_lower: str) -> bool:
-        if "anime" not in text_lower:
+        normalized = _normalize_command_text(text_lower)
+        if "anime" not in normalized:
             return False
-        if any(phrase in text_lower for phrase in ["recomienda", "sugerencia", "recomendación", "recomendacion"]):
+        if any(phrase in normalized for phrase in ["recomienda", "sugerencia", "recomendacion"]):
             return False
-        return any(trigger in text_lower for trigger in ANIME_WATCH_TRIGGERS)
+        if any(pattern in normalized for pattern in ANIME_RANDOM_PATTERNS):
+            return False
+        return any(trigger in normalized for trigger in ANIME_WATCH_TRIGGERS)
 
     def _extract_anime_title(self, user_text: str) -> str:
         match = re.search(r"(?:ver|buscar|pon|reproduce)\s+(?:el\s+)?anime\s+(?:de|del|llamado|titulado)?\s*(.+)", user_text, flags=re.IGNORECASE)
@@ -5072,6 +6574,14 @@ class AssistantCore:
             self._handle_location_query()
             self._remember_interaction(user_text, "location", ["ubicacion"])
             return
+        if self._is_identity_question(text_lower):
+            self._handle_identity_question()
+            self._remember_interaction(user_text, "identity", ["identidad"])
+            return
+        if self._is_compliment_request(text_lower):
+            self._handle_compliment_request()
+            self._remember_interaction(user_text, "compliment", self._intent_tags("compliment"))
+            return
         if self._is_capability_request(text_lower):
             self._handle_capability_request()
             self._remember_interaction(user_text, "capabilities", self._intent_tags("capabilities"))
@@ -5096,6 +6606,14 @@ class AssistantCore:
             self._emit(response)
             self._remember_interaction(user_text, "curated_game_guide", ["videojuego", "guia"])
             return
+        if self._is_recipe_request(text_lower):
+            self._handle_recipe_request(user_text)
+            self._remember_interaction(user_text, "recipe", self._intent_tags("recipe"))
+            return
+        if self._is_hardware_request(text_lower):
+            self._handle_hardware_request(user_text)
+            self._remember_interaction(user_text, "hardware", self._intent_tags("hardware"))
+            return
         if self._is_goty_question(text_lower):
             self._handle_goty_question(user_text)
             self._remember_interaction(user_text, "goty", self._intent_tags("goty"))
@@ -5103,6 +6621,10 @@ class AssistantCore:
         if self._is_voice_mode_command(normalized_text):
             self._handle_mode_switch(user_text)
             self._remember_interaction(user_text, "mode_switch", ["modo"])
+            return
+        if self._is_emotion_boost_request(text_lower):
+            self._handle_emotion_boost_request()
+            self._remember_interaction(user_text, "emotion", self._intent_tags("emotion"))
             return
         if any(word in text_lower for word in ["cómo te sientes", "como te sientes", "estado emocional", "estado de ánimo", "estado animico"]):
             self._handle_emotion_request()
@@ -5149,10 +6671,6 @@ class AssistantCore:
             self._handle_camera_request()
             self._remember_interaction(user_text, "camera", self._intent_tags("camera"))
             return
-        if self._is_anime_watch_request(text_lower):
-            self._handle_anime_watch_request(user_text)
-            self._remember_interaction(user_text, "anime_watch", self._intent_tags("anime_watch"))
-            return
         if self._is_fun_fact_request(text_lower):
             self._handle_fun_fact_request(user_text)
             self._remember_interaction(user_text, "fun_fact", ["curiosidades"])
@@ -5160,6 +6678,10 @@ class AssistantCore:
         if self._is_anime_suggestion_request(text_lower):
             self._handle_anime_suggestion_request(user_text)
             self._remember_interaction(user_text, "anime_suggestion", self._intent_tags("anime_suggestion"))
+            return
+        if self._is_anime_watch_request(text_lower):
+            self._handle_anime_watch_request(user_text)
+            self._remember_interaction(user_text, "anime_watch", self._intent_tags("anime_watch"))
             return
         if any(keyword in text_lower for keyword in OPINION_KEYWORDS):
             self._handle_opinion_request(user_text)
@@ -5242,7 +6764,7 @@ class ChatGUI:
         if not GUI_AVAILABLE or tk is None or ttk is None:
             raise RuntimeError("Tkinter no está disponible en este entorno.")
         self.root = tk.Tk()
-        self.root.title("Miau - Asistente Emocional")
+        self.root.title("Miau - Asistente Virtual-Los puffs")
         self.root.geometry("780x620")
         self.root.minsize(560, 480)
         self._configure_style()
@@ -5351,7 +6873,7 @@ class ChatGUI:
         self.voice_thread: Optional[threading.Thread] = None
         self.voice_stop_event = threading.Event()
         self.selected_mic_index: Optional[int] = None
-        self._append_message("Miau", "Hola, soy SolaChat. Aquí podemos conversar con comodidad.", animate=True)
+        self._append_message("Miau", "Hola, soy Miau. Aquí podemos conversar con comodidad.", animate=True)
 
     def _configure_style(self) -> None:
         if not ttk:

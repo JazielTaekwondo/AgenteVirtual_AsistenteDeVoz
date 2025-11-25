@@ -1,0 +1,489 @@
+% Preámbulo proporcionado por el usuario
+\documentclass[a4paper,12pt]{article}
+\usepackage{siunitx}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla,es-noshorthands]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb} % Necesario para \lor, \land, \Leftrightarrow
+\usepackage{xcolor}
+\usepackage{graphicx} % Necesario para \includegraphics (aunque usaremos placeholders)
+\usepackage[citecolor=blue]{hyperref}       % Para enlaces en el documento
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{circuitikz}
+\usepackage{listings}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{gensymb}
+\usepackage{longtable}           % Permite tablas que ocupan múltiples páginas
+\usepackage{booktabs}            % Para líneas de tabla más bonitas
+\usepackage{array}               % Columnas tipo p{..} y mejoras en tablas
+\usepackage{tabularx}            % Columnas elásticas X
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\lstset{breaklines=true, breakatwhitespace=true}
+
+  
+% Ajuste de la altura del encabezado
+\setlength{\headheight}{76.27646pt}
+\addtolength{\topmargin}{-34.27646pt}
+
+% --- NUEVOS COMANDOS ---
+% Definimos \V y \F para Verdadero y Falso en negrita-matemática
+\newcommand{\V}{$\mathbf{V}$}
+\newcommand{\F}{$\mathbf{F}$}
+
+% Plantilla reutilizable para el "Reporte breve del líder"
+% Uso: \ReporteSesion{Equipo}{Integrantes}{Objetivo}{Actividades}{Avances}{Pendientes}{Enlace}
+\newcommand{\ReporteSesion}[7]{%
+    \renewcommand{\arraystretch}{1.25}%
+    \begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.32\textwidth}X@{}}
+        \toprule
+    Equipo: & #1 \\
+    Integrantes presentes: & #2 \\
+    Objetivo de la sesión: & #3 \\
+    Actividades realizadas: & #4 \\
+    Avances logrados / acuerdos: & #5 \\
+    Pendientes y próximos pasos: & #6 \\
+    Enlace a repositorio/drive (si aplica): & #7 \\
+        \bottomrule
+    \end{tabularx}%
+}
+
+
+% --- INICIO DEL DOCUMENTO ---
+\begin{document}
+
+% --- PORTADA PERSONALIZADA ---
+% Desactivar la numeración de página para la portada
+\thispagestyle{empty}
+
+% Colocar las imágenes en las esquinas superiores
+% --- NOTA: Se reemplazaron \includegraphics por \framebox por limitaciones del entorno ---
+\begin{minipage}[t]{0.4\textwidth}
+    \raggedright
+    \includegraphics[width=2cm]{image/der.png} % Código original
+    %\framebox{Logo Izq. (der.png)}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+    \raggedleft
+    \includegraphics[width=2cm]{image/izq.png} % Código original
+    %\framebox{Logo Der. (izq.png)}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{center}
+    \Huge{\textbf{Proyecto Final: Asistente Virtual.}}
+
+    \vspace{2cm}
+    \Large{\textbf{Universidad Nacional Autonoma de Mexico.}}\\
+    \Large{\textbf{Facultad de ingeniería.}}\\
+    \vspace{1cm}
+    %\Large{Departamento de Ing. en Control y Robotica.} \\
+    %\vspace{0.5cm}
+    \Large{Inteligencia Artificial.} \\
+    \vspace{0.5cm}
+    \LARGE{\textbf{Nombre del equipo:}}
+    \LARGE{\textit{Los puffs}}\\
+    \vspace{0.5cm}
+    \Large{\textbf{Equipo:} 3} \\
+    \vspace{0.5cm}
+    \Large{\textbf{Grupo:} 5} \\
+    \vspace{0.5cm}
+    \LARGE{\textbf{Alumno (s):} }\\
+    \vspace{0.2cm}
+    \Large{320060829.} \\
+    \vspace{0.2cm}
+    \Large{320317264.} \\
+    \vspace{0.2cm}
+    \Large{320206968.} \\
+    \vspace{0.2cm}
+    \Large{320025561.} \\
+    \vspace{0.2cm}
+    \Large{320266083.} \\
+    %\Large{\textbf{Brigada:}}
+    %\Large{06} \\
+    %\vspace{0.5cm}
+    \vspace{2cm}
+    \Large{\textbf{Fecha de la sesion:}}\\
+    \vspace{0.5cm}
+    \large{{Noviembre 11, 2025}}
+\end{center} 
+
+
+\newpage
+
+\pagestyle{fancy}
+
+\fancyhf{}
+
+\fancyhead[L]{\includegraphics[width=1.5cm]{image/izq.png}}
+
+\fancyhead[R]{\includegraphics[width=1.5cm]{image/der.png}}
+
+\fancyfoot[C]{\thepage}  % Coloca el número de página en el centro del pie de página
+% Línea horizontal en el pie de página
+\renewcommand{\footrulewidth}{0.4pt}  % Define el grosor de la línea en el pie de página
+
+% Empezar numeración de páginas desde 1 en la segunda página
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% --- FIN DE LA SECCIÓN DE PORTADA Y CONFIGURACIÓN ---
+
+% --- INICIO DEL CONTENIDO DEL PLAN DE PROYECTO ---
+
+\tableofcontents
+\newpage
+
+% --- SECCIONES DEL DOCUMENTO ---
+\section{Integrantes presentes:}
+\begin{itemize}
+    \item Espinoza Matamoros Percival Ulises.
+    \item Flores Colin Victor Jaziel.
+    \item Garcia Cortes Adolfo de Jesus
+    \item Lara Hernandez Angel Husiel.
+    \item Lugo Manzano Rodrigo.
+\end{itemize}
+    
+\section{Objetivos de la sesion}
+Presentar las bases del documento y la asignación de roles dentro del equipo. El proyecto sera la creación de un asistente inteligente de voz, programado íntegramente en Python.
+
+El objetivo es diseñar un agente que pueda:
+\begin{itemize}
+    \item Escuchar y procesar comandos de voz (Speech-to-Text).
+    \item Comprender la intención del usuario (Natural Language Processing).
+    \item Tomar decisiones y ejecutar acciones basadas en esa intención (Lógica del Agente).
+    \item Proporcionar retroalimentación audible (Text-to-Speech).
+\end{itemize}
+
+\section{Actividades Realizadas:}
+\begin{itemize}
+    \item Creación del repositorio en GitHub para el proyecto.
+    \item Definición de roles y responsabilidades para cada uno de nosotros.
+    \item Establecimiento de objetivos claros para el proyecto y la sesión inicial.
+    \item Distribución de tareas específicas para cada integrante del equipo.
+\end{itemize}
+
+\section{Avances logrados / acuerdos:}
+
+\begin{description}
+        \item\textbf{Configuración del Repositorio.} Victor Ya tiene listo el repositorio en GitHub, con la estructura de proyecto base.
+        \item \textbf{Definición de Roles para el equipo.} Se definieron los módulos principales: STT (Percival), TTS (Angel), NLP e Integración (Victor), Lógica del Agente (Adolfo) y Documentación (Rodrigo).
+        \item \textbf{Investigar de cada modulo} Cada miembro investigará las librerías y arquitecturas necesarias para el módulo correspendiente (STT, TTS, NLP, Lógica del Agente).
+\end{description}
+
+
+\section{Pendientes y próximos pasos:}
+
+\subsection{Actividades pendientes:}
+
+\begin{description}
+    \item\textbf{Investigación y Definición de Módulos.} Lo primero sera investigar las librerías de Python y las arquitecturas necesarias para STT, TTS, NLP, Lógica del Agente.
+    
+    \item \textbf{Desarrollo de Prototipos.} Desarrollo de prototipos para cada módulo principal (STT, TTS, NLP).
+    
+    \item\textbf{Definición de API .} La API a utilizar sera implementadas directametne de OpenAI, para los usos de las API de los modelos de GPT o dependiendo del avance de los modulos a desarrollar.
+    
+    \item\textbf{Implementación de Lógica del Agente.} Desarrollo compelto del asistente (lógica de decisión) y la aplicación Python funcional.
+    
+    \item\textbf{Redacción de Documentación.} Conforme a la terminacion de los modulos, se iran documetando idividualmente y finalización del Entregable de Teoría (Ensayo en LaTeX).
+    
+\end{description}
+
+
+\subsection{Acuerdos de Tareas para el equipo:}
+La carga de trabajo se distribuye de la siguiente manera:
+
+\textbf{Victor (Líder y NLP)}
+\begin{itemize}
+    \item \textbf{Gestión de Repositorio:} Configurar y mantener el repositorio de GitHub, gestionar las ramas (branches) y fusiones (merges). **Con ayuda de Perci".
+    \item \textbf{Módulo de NLP (Natural Language Processing):} Desarrollar el componente central que recibe el texto transcrito por Victor. (Dependiendo del analisis que podra tener las API de OpenIA)
+    \item \textbf{Responsabilidad Clave:} Usando librerías como \texttt{spaCy} o \texttt{NLTK}, deberá extraer la \textbf{intención} del usuario (e.g., "buscar", "reproducir", "preguntar") y las \textbf{entidades} (e.g., "clima en CDMX", "canción de X").
+\end{itemize}
+
+\textbf{Percival (Módulo de Speech-to-Text - STT)}
+\begin{itemize}
+    \item \textbf{Módulo STT (Reconocimiento de Voz):} Implementar el componente que escucha activamente el micrófono.
+    \item \textbf{Librerías:} Investigar e implementar la librería más adecuada (e.g., \texttt{SpeechRecognition}) para capturar el audio y transcribirlo a una cadena de texto.
+    \item \textbf{Activación:} Investigar la implementación de una "palabra de activación" para que el asistente no escuche permanentemente.
+\end{itemize}
+
+\textbf{Angel (Módulo de Text-to-Speech - TTS)}
+\begin{itemize}
+    \item \textbf{Módulo TTS (Síntesis de Voz):} Desarrollar el componente que le da "voz" al asistente.
+    \item \textbf{Librerías:} Recibirá una cadena de texto (la respuesta del asistente) y usará una librería (e.g., \texttt{pyttsx3}, \texttt{gTTS}) para sintetizarla en audio y reproducirla.
+\end{itemize}
+
+\textbf{Adolfo (Lógica del Agente y Acciones)}
+\begin{itemize}
+    \item \textbf{Núcleo Lógico (Cerebro):} Diseñar e implementar el "cerebro" del asistente.
+    \item \textbf{Sistema de Reglas/Decisión:} Recibirá la "intención" y las "entidades" del módulo NLP de Percival.
+    \item \textbf{Responsabilidad Clave:} Implementará la lógica (usando un sistema de reglas, \texttt{if-elif-else}, o un árbol de decisión) para determinar \textbf{qué acción} debe ejecutar el asistente.
+    \item \textbf{Codificación de Acciones:} Programará las acciones básicas (e.g., responder a un saludo, decir la hora).
+\end{itemize}
+
+\textbf{Rodrigo (Documentación Técnica y Teórica)}
+\begin{itemize}
+    \item \textbf{Responsable de Documentación:} Se encargará de toda la documentación escrita del proyecto.
+    \item \textbf{Entregable de Teoría:} Redactar el ensayo en LaTeX sobre los modelos de IA, para que sea como los requisitos del proyecto.
+
+\end{itemize}
+
+\section{Enlace a Repositorio:}
+Esta es la liga al repositorio del proyecto en GitHub:
+
+\url{https://github.com/JazielTaekwondo/AgenteVirtual_AsistenteDeVoz.git}
+
+\section{Descripci\'on del agente y su prop\'osito}
+El archivo principal \texttt{agente.py} materializa al asistente ``Miau'', un agente emocional multimodal que vive en la computadora del usuario y centraliza automatizaciones cotidianas. Opera como un hub capaz de escuchar por micr\'ofono, interpretar intenciones en lenguaje natural, consultar bases curadas de recetas, hardware, anime y videojuegos, lanzar navegaci\'on guiada en Google Maps o YouTube, y ejecutar tareas asincr\'onicas como recordatorios, temporizadores y mensajes programados de WhatsApp Web. Todo el flujo est\'a orquestado por un estado emocional persistente que modula la redacci\'on de las respuestas: las entradas alimentan un rastreador afectivo (	exttt{EmotionState}) que eval\'ua polaridad, decae su intensidad en el tiempo y se puede impulsar bajo comando del usuario, lo que mantiene una narrativa emp\'atica. Miau expone dos interfaces: un modo consola liviano para pruebas r\'apidas y una GUI en Tkinter que muestra burbujas de chat, adjunta im\'agenes y permite disparar escucha por voz; en ambos casos se reutiliza el mesmo n\'ucleo \texttt{AssistantCore}, que canaliza cada mensaje mediante manejadores especializados (	exttt{\_handle\_*}) y mantiene una memoria sem\'antica resumida para que las siguientes respuestas consideren el contexto. La arquitectura modular facilita extender dominios: cada dataset se ingiere con funciones \texttt{\_load\_curated\_*} que construyen \'indices por alias y etiquetas, y cada nueva intenci\'on se integra con una lista de palabras clave normalizadas (	exttt{RAW\_*}) y un manejador dedicado que encapsula la experiencia de usuario de extremo a extremo. 
+
+\section{Justificaci\'on te\'orica del modelo de IA aplicado}
+El agente adopta un enfoque h\'ibrido que combina un sistema de reglas determinista, un modelo probabil\'istico ligero y un modelo generativo neural de gran escala. La capa simb\'olica est\'a conformada por docenas de conjuntos de palabras clave, expresiones regulares y patrones completos (por ejemplo \texttt{COOKING\_KEYWORDS}, \texttt{ANIME\_FILTER\_HINTS}, \texttt{WHATSAPP\_TRIGGER\_KEYWORDS}) que act\'uan como un motor de producci\'on: cada entrada se normaliza mediante \texttt{\_normalize\_command\_text} y pasa por ristas de condicionales que activan un manejador cuando se cumple un conjunto espec\'ifico de condiciones, replicando el comportamiento de un \emph{sistema experto} cl\'asico. Como respaldo se incluye \texttt{IntentPredictor}, que al no hallar coincidencias contundentes construye una representaci\'on estructurada y consulta un modelo generativo (configurado en \texttt{LLM\_MODEL}) para inferir la intenci\'on, fusionando as\'i razonamiento estad\'istico con trazabilidad simb\'olica. Paralelamente, \texttt{EmotionState} implementa un peque\~no modelo probabil\'istico: asigna pesos positivos o negativos a frases detonantes, mantiene una distribuci\'on sobre emociones predominantes, aplica decaimiento exponencial y expone un resumen textual coherente; esto aproxima t\'ecnicas de modelos din\'amicos donde la probabilidad de cada estado se actualiza con evidencia textual. El componente generativo \texttt{AssistantBrain} construye prompts \texttt{system}/\texttt{user} que incluyen memorias relevantes, instrucciones de estilo y el estado emocional para que el modelo de lenguaje redacte una respuesta natural, asegurando coherencia narrativa incluso cuando la consulta excede la cobertura de las reglas. Esta mezcla permite cumplir requisitos antag\'onicos: decisiones r\'apidas y explicables cuando hay palabras clave claras, y flexibilidad lingü\'istica para solicitudes abiertas, todo mientras se conserva un hilo emocional continuo. 
+
+\section{Problemas encontrados y soluciones propuestas}
+Durante las iteraciones de desarrollo surgieron varios retos que se resolvieron directamente dentro de \texttt{agente.py}. El primero fue la confusi\'on entre peticiones culinarias y recomendaciones de anime, dado que varias frases compart\'ian verbos gen\'ericos como ``recom\'iendame algo''; la soluci\'on consisti\'o en ampliar los conjuntos \texttt{RAW\_COOKING\_KEYWORDS} y \texttt{RAW\_ANIME\_FILTER\_HINTS}, separar patrones aleatorios y forzar que \texttt{\_process\_input} eval\'ue dominios espec\'ificos antes de delegar en el modelo generativo. Otro problema fue la imposibilidad de ``aumentar el estado emocional'' bajo demanda: el agente describ\'ia su estado pero no lo alteraba; se implement\'o \texttt{EmotionState.boost}, se agreg\'o una lista \texttt{RAW\_EMOTION\_BOOST\_KEYWORDS} y un manejador \texttt{\_handle\_emotion\_boost\_request} que eleva la intensidad y lo comunica de inmediato. Tambi\'en detectamos que, al preguntarle ``\'Qui\'en eres?'', el modelo generativo respond\'ia con el nombre del modelo base; se agregaron patrones \texttt{RAW\_IDENTITY\_QUERY\_PATTERNS} y un manejador que fuerza la identidad ``Soy Miau'' sin ambig\"uedades. Finalmente, las solicitudes ``Dime algo bonito'' aterrizaban en el bloque gen\'erico de sugerencias; la mitigaci\'on fue introducir \texttt{RAW\_COMPLIMENT\_REQUEST\_PATTERNS} y un cat\'alogo de cumplidos que preservan la coherencia emocional. Cada correcci\'on qued\'o documentada como parte del c\'odigo para mantener trazabilidad: los datasets ampliados describen el vocabulario usado, los manejadores justifican su flujo con comentarios breves y el documento presente registra las motivaciones te\'oricas, cerrando el ciclo de ingenier\'ia.
+
+\section{Cat\'alogo de comandos y preguntas compatibles}
+La siguiente lista resume los comandos y preguntas que Miau comprende de forma nativa. Cada bloque agrupa las expresiones clave que activan un manejador espec\'ifico dentro de \texttt{AssistantCore}; todos los ejemplos est\'an documentados en los conjuntos de palabras clave (\texttt{RAW\_*}) y se validan mediante \texttt{IntentPredictor} antes de invocar al modelo generativo.
+
+\begin{itemize}
+    \item \textbf{Estado, despedidas e identidad:} Preguntas registradas como \texttt{Como estas Miau?} o \texttt{Que estas haciendo?} y confirmaciones tales como \texttt{Gracias, puedes descansar} disparan la descripci\'on emocional, los saludos finales o el bloque de identidad fija.
+    \item \textbf{Capacidades y creadores:} Consultas del tipo \texttt{Que puedes hacer?}, \texttt{En que me ayudas?} o \texttt{Quien te programo?} responden con el resumen de servicios y la ficha de creadores almacenada en constantes.
+    \item \textbf{Estado emocional y cumplidos:} Solicitudes como \texttt{Aumenta tu estado emocional}, \texttt{Quiero que hables con mas emocion} o \texttt{Dime algo bonito} activan \texttt{EmotionState.boost} y el cat\'alogo de \texttt{COMPLIMENT\_REQUEST\_PATTERNS}.
+    \item \textbf{Hora, fecha y ubicaci\'on:} Expresiones \texttt{Que hora es?}, \texttt{Que dia es hoy?} y \texttt{Donde estamos?} devuelven la hora del sistema, la fecha formateada y la ubicaci\'on declarada en configuraci\'on.
+    \item \textbf{Recordatorios y temporizadores:} Frases como \texttt{Recuerdame llamar a Ana en 20 minutos}, \texttt{Pon un temporizador de cinco minutos} o \texttt{Crea un evento en Google Calendar manana a las 10} usan \texttt{TIMER\_DURATION\_PATTERN} y generan enlaces a Calendar o recordatorios locales.
+    \item \textbf{Rutas y navegaci\'on:} Instrucciones \texttt{Guiame de casa a la FES} o \texttt{Abre la ruta al supermercado} llaman a \texttt{open\_google\_maps\_route} con origen/destino inferidos.
+    \item \textbf{WhatsApp automatizado:} Mensajes \texttt{Manda un WhatsApp a Carla: ya voy en camino}, \texttt{Programa un mensaje para las 8 pm} y \texttt{Responde por mi a Juan durante 3 minutos} se procesan con \texttt{WHATSAPP\_TRIGGER\_KEYWORDS} y los hilos de Selenium.
+    \item \textbf{Cocina y recetas:} Consultas culinarias tales como \texttt{Que puedo cocinar hoy?}, \texttt{Dame una cena vegana ligera} o \texttt{Sorprendeme con desayuno} usan cat\'alogos curados con filtros por comida, dieta o ingrediente.
+    \item \textbf{Hardware y setups:} Pedidos \texttt{Arma una PC para 1440p}, \texttt{Recomienda una laptop de trabajo} y \texttt{Explicame la GPU del build} consultan \texttt{RAW\_HARDWARE\_*} y devuelven listas detalladas por componente.
+    \item \textbf{Anime y entretenimiento:} Recomendaciones como \texttt{Dame un anime de romance moderno}, \texttt{Elige un anime por mi} o \texttt{Abre la serie en AnimeFLV} aplican los filtros de g\'enero, \'epoca y formato definidos en \texttt{RAW\_ANIME\_*}.
+    \item \textbf{M\'usica y video:} Solicitudes \texttt{Pon una playlist de lo-fi}, \texttt{Abre en YouTube la cancion X} y \texttt{Busca el episodio en AnimeFLV} utilizan \texttt{open\_youtube\_track} y los comandos de b\'usqueda.
+    \item \textbf{Buscador web y documentos:} Peticiones \texttt{Investiga noticias sobre IA}, \texttt{Buscame un articulo cientifico} y \texttt{Resume este texto} disparan \texttt{open\_google\_search} o el flujo de an\'alisis de documentos locales.
+    \item \textbf{C\'amara y visi\'on:} Frases \texttt{Describe lo que ve la camara} o \texttt{Abre la camara frontal} activan \texttt{open\_camera\_preview\_and\_analyze} y los modelos de descripci\'on sem\'antica.
+    \item \textbf{Modo voz y TTS:} Comandos \texttt{Activa la voz}, \texttt{Desactiva el modo voz} y \texttt{Quiero hablar por chat} se normalizan con \texttt{VOICE\_MODE\_*} y alternan la escucha de micr\'ofono.
+    \item \textbf{Datos curiosos y GOTY:} Preguntas \texttt{Dime un dato curioso}, \texttt{Cual crees que sea el GOTY?} y \texttt{Que calificacion merece el proyecto?} usan las plantillas de \texttt{FUN\_FACT\_RESPONSES}, \texttt{GOTY\_KEYWORDS} y \texttt{PROJECT\_EVAL\_PHRASES}.
+\end{itemize}
+
+Cada grupo est\'a respaldado por pruebas en \texttt{test\_local\_llm.py} y por los cat\'alogos curados ubicados en \texttt{data/}, por lo que la cobertura de preguntas se mantiene estable aun si se ajustan los modelos generativos.
+
+\subsection*{Listado exhaustivo de preguntas compatibles}
+\begin{itemize}
+    \item \texttt{Como estas hoy Miau?}
+    \item \texttt{Que tal tu animo ahora?}
+    \item \texttt{Puedes contarme quien eres?}
+    \item \texttt{Que estas haciendo en este momento?}
+    \item \texttt{Cual es tu estado emocional actual?}
+    \item \texttt{Puedes resumir como te sientes?}
+    \item \texttt{Que te hizo sentir alegre hoy?}
+    \item \texttt{Cual fue la ultima emocion que registraste?}
+    \item \texttt{Puedes describir tu personalidad en pocas palabras?}
+    \item \texttt{Recordaras esta conversacion mas tarde?}
+    \item \texttt{Quien te creo originalmente?}
+    \item \texttt{Que nombre debo usar para hablarte?}
+    \item \texttt{Cual es tu objetivo principal conmigo?}
+    \item \texttt{Puedes hablar con mas emocion ahora?}
+    \item \texttt{Puedes hablar con un tono mas tranquilo?}
+    \item \texttt{Puedes aumentar tu estado emocional?}
+    \item \texttt{Puedes bajar tu energia para sonar relajada?}
+    \item \texttt{Puedes darme un cumplido sincero?}
+    \item \texttt{Puedes decirme algo bonito para animarme?}
+    \item \texttt{Puedes notar si me siento triste?}
+    \item \texttt{Que puedes hacer por mi hoy?}
+    \item \texttt{Puedes listar tus habilidades principales?}
+    \item \texttt{Que servicios controlas directamente?}
+    \item \texttt{Puedes recordarme que modulos componen el agente?}
+    \item \texttt{Como decides que accion ejecutar?}
+    \item \texttt{Puedes explicarme tu arquitectura interna?}
+    \item \texttt{Que modelos de lenguaje estas usando?}
+    \item \texttt{Puedes trabajar solo con texto sin voz?}
+    \item \texttt{Puedes funcionar sin conexion a internet?}
+    \item \texttt{Que comandos entiendes mejor?}
+    \item \texttt{Puedes aprender nuevos comandos?}
+    \item \texttt{Puedes guardar una memoria de esta charla?}
+    \item \texttt{Puedes resumir nuestro historial reciente?}
+    \item \texttt{Puedes indicarme que datasets consultas?}
+    \item \texttt{Puedes mostrarme tu estado del sistema?}
+    \item \texttt{Que hora es en este momento?}
+    \item \texttt{Que dia es hoy?}
+    \item \texttt{En que fecha estamos?}
+    \item \texttt{Puedes decirme la fecha completa?}
+    \item \texttt{Cual es la semana del anio actual?}
+    \item \texttt{Cual es la zona horaria configurada?}
+    \item \texttt{Puedes decirme donde estoy ubicado?}
+    \item \texttt{Puedes decirme cuando anochece hoy?}
+    \item \texttt{Puedes decirme cuando amanece hoy?}
+    \item \texttt{Puedes avisarme cuando sea medianoche?}
+    \item \texttt{Puedes recordarme beber agua en 30 minutos?}
+    \item \texttt{Puedes poner un temporizador de 5 minutos?}
+    \item \texttt{Puedes crear un recordatorio para llamar a mama a las 8 pm?}
+    \item \texttt{Puedes agendar un evento de estudio manana a las 10 am?}
+    \item \texttt{Puedes recordarme revisar el correo en una hora?}
+    \item \texttt{Puedes configurar un temporizador de descanso de 15 minutos?}
+    \item \texttt{Puedes programar un recordatorio diario para meditar a las 7 am?}
+    \item \texttt{Puedes recordarme enviar el reporte el viernes?}
+    \item \texttt{Puedes poner un recordatorio semanal para limpiar la casa?}
+    \item \texttt{Puedes avisarme cuando pasen 45 minutos?}
+    \item \texttt{Puedes anotar que debo pagar la luz el lunes?}
+    \item \texttt{Puedes recordarme tomar mis medicinas cada 6 horas?}
+    \item \texttt{Puedes poner un temporizador para sacar la pizza en 18 minutos?}
+    \item \texttt{Puedes avisarme dentro de 10 minutos para volver al trabajo?}
+    \item \texttt{Puedes recordarme practicar guitarra esta noche?}
+    \item \texttt{Puedes programar un evento de junta con Carla el martes a las 9?}
+    \item \texttt{Puedes recordarme escribirle al profesor manana?}
+    \item \texttt{Puedes poner un temporizador de 2 minutos para cepillarme los dientes?}
+    \item \texttt{Puedes configurar un recordatorio de ejercicio a las 6 am?}
+    \item \texttt{Puedes recordarme revisar el proyecto final el domingo?}
+    \item \texttt{Puedes agendar una videollamada con Victor el jueves?}
+    \item \texttt{Puedes recordarme comprar boletos del cine el sabado?}
+    \item \texttt{Puedes poner un recordatorio mensual para respaldar mis archivos?}
+    \item \texttt{Puedes avisarme cuando falten 15 minutos para mi clase?}
+    \item \texttt{Puedes crear una alerta para regar las plantas cada tercer dia?}
+    \item \texttt{Puedes guiarme de casa a la FES Acatlan?}
+    \item \texttt{Puedes abrir la ruta al supermercado mas cercano?}
+    \item \texttt{Puedes buscar como llegar al gimnasio desde aqui?}
+    \item \texttt{Puedes darme indicaciones para ir al banco?}
+    \item \texttt{Puedes mostrarme la ruta en coche al hospital general?}
+    \item \texttt{Puedes decirme como llego caminando al parque central?}
+    \item \texttt{Puedes abrir Google Maps con la ruta a la universidad?}
+    \item \texttt{Puedes decirme cuanto tiempo hago a la oficina ahora?}
+    \item \texttt{Puedes recomendarme una ruta para evitar trafico?}
+    \item \texttt{Puedes iniciar la navegacion a casa de mis padres?}
+    \item \texttt{Puedes mandar un WhatsApp a Ana y decirle que voy en camino?}
+    \item \texttt{Puedes programar un mensaje para Pedro a las 7 pm?}
+    \item \texttt{Puedes responder por mi a Carla durante 3 minutos?}
+    \item \texttt{Puedes enviar un mensaje de voz a Luis diciendo buenos dias?}
+    \item \texttt{Puedes reenviar mi ubicacion a Beto?}
+    \item \texttt{Puedes avisarle a mi mama que llego mas tarde?}
+    \item \texttt{Puedes decirle a mi jefe que ya envie el reporte?}
+    \item \texttt{Puedes programar un mensaje diario de buenos dias para Laura?}
+    \item \texttt{Puedes enviar una nota a Rodri preguntando por la tarea?}
+    \item \texttt{Puedes cancelar el mensaje programado para Jose?}
+    \item \texttt{Puedes revisar si hay nuevas respuestas en el grupo del equipo?}
+    \item \texttt{Puedes mandar un recordatorio amistoso a Vale dentro de 2 horas?}
+    \item \texttt{Puedes escribirle a Dani que la junta se movio a las 5?}
+    \item \texttt{Puedes redactar un mensaje formal para el profesor?}
+    \item \texttt{Puedes programarme una serie de mensajes motivadores cada hora?}
+    \item \texttt{Puedes decirle a mi hermana que compre pan?}
+    \item \texttt{Puedes confirmar con Victor la hora de la reunion?}
+    \item \texttt{Puedes mandar emojis de agradecimiento a Fer?}
+    \item \texttt{Puedes repetir mi ultimo mensaje a Raul?}
+    \item \texttt{Puedes pedirle a Sofi que comparta los apuntes?}
+    \item \texttt{Puedes darme un desayuno rapido?}
+    \item \texttt{Puedes darme un desayuno alto en proteina?}
+    \item \texttt{Puedes darme un desayuno vegano?}
+    \item \texttt{Puedes darme un desayuno economico?}
+    \item \texttt{Puedes darme un desayuno para compartir?}
+    \item \texttt{Puedes darme una comida ligera?}
+    \item \texttt{Puedes darme una comida sin gluten?}
+    \item \texttt{Puedes darme una comida vegetariana?}
+    \item \texttt{Puedes darme una comida reconfortante?}
+    \item \texttt{Puedes darme una comida picante?}
+    \item \texttt{Puedes darme una cena rapida?}
+    \item \texttt{Puedes darme una cena vegana?}
+    \item \texttt{Puedes darme una cena sin gluten?}
+    \item \texttt{Puedes darme una cena economica?}
+    \item \texttt{Puedes darme una cena para dos personas?}
+    \item \texttt{Puedes darme un snack saludable?}
+    \item \texttt{Puedes darme un snack alto en proteina?}
+    \item \texttt{Puedes darme un snack dulce?}
+    \item \texttt{Puedes darme un snack salado?}
+    \item \texttt{Puedes darme un postre rapido?}
+    \item \texttt{Puedes darme un postre sin horno?}
+    \item \texttt{Que puedo cocinar con pollo y arroz?}
+    \item \texttt{Puedes darme una receta con garbanzos y espinacas?}
+    \item \texttt{Puedes darme una receta para meal prep semanal?}
+    \item \texttt{Que puedo cocinar solo con microondas?}
+    \item \texttt{Puedes armar una PC para juegos a 1080p?}
+    \item \texttt{Puedes armar una PC para 1440p?}
+    \item \texttt{Puedes armar una PC para edicion de video?}
+    \item \texttt{Puedes recomendar una laptop ligera para programar?}
+    \item \texttt{Que monitor deberia comprar para 144 Hz?}
+    \item \texttt{Que GPU se ajusta a 300 dolares?}
+    \item \texttt{Puedes sugerir perifericos para oficina en casa?}
+    \item \texttt{Que SSD recomiendas para 2 TB?}
+    \item \texttt{Puedes sugerir un setup silencioso?}
+    \item \texttt{Que fuente necesito para una RTX 4070?}
+    \item \texttt{Puedes darme un build ITX compacto?}
+    \item \texttt{Puedes recomendar audifonos con cancelacion?}
+    \item \texttt{Que teclado mecanico silencioso me conviene?}
+    \item \texttt{Que silla ergonomica sugieres?}
+    \item \texttt{Puedes armar un setup para streamings?}
+    \item \texttt{Que webcam uso para clases en linea?}
+    \item \texttt{Puedes explicarme la GPU propuesta?}
+    \item \texttt{Puedes detallar la lista de componentes del build?}
+    \item \texttt{Cual es el cuello de botella del setup actual?}
+    \item \texttt{Como actualizo mi PC sin cambiar la motherboard?}
+    \item \texttt{Puedes darme un anime de romance moderno?}
+    \item \texttt{Puedes recomendar un anime clasico de romance moderno?}
+    \item \texttt{Puedes sugerir un anime corto de romance moderno?}
+    \item \texttt{Puedes darme un anime de ciencia ficcion?}
+    \item \texttt{Puedes recomendar un anime clasico de ciencia ficcion?}
+    \item \texttt{Puedes sugerir un anime corto de ciencia ficcion?}
+    \item \texttt{Puedes darme un anime slice of life?}
+    \item \texttt{Puedes recomendar un anime clasico slice of life?}
+    \item \texttt{Puedes sugerir un anime corto slice of life?}
+    \item \texttt{Puedes darme un anime de deportes?}
+    \item \texttt{Puedes recomendar un anime clasico de deportes?}
+    \item \texttt{Puedes sugerir un anime corto de deportes?}
+    \item \texttt{Puedes darme un anime de suspenso?}
+    \item \texttt{Puedes recomendar un anime clasico de suspenso?}
+    \item \texttt{Puedes sugerir un anime corto de suspenso?}
+    \item \texttt{Puedes darme un anime de comedia escolar?}
+    \item \texttt{Puedes recomendar un anime clasico de comedia escolar?}
+    \item \texttt{Puedes sugerir un anime corto de comedia escolar?}
+    \item \texttt{Puedes elegir un anime por mi gusto?}
+    \item \texttt{Puedes recomendar un anime para ver con la familia?}
+    \item \texttt{Que anime nuevo trae buena critica?}
+    \item \texttt{Puedes darme un anime con protagonista femenina fuerte?}
+    \item \texttt{Que anime tiene mejor banda sonora reciente?}
+    \item \texttt{Puedes recomendar un anime isekai poco conocido?}
+    \item \texttt{Puedes darme un anime mecha con mucha accion?}
+    \item \texttt{Puedes poner una playlist de lo-fi?}
+    \item \texttt{Puedes poner musica para concentrarme?}
+    \item \texttt{Puedes abrir en YouTube la cancion Memories?}
+    \item \texttt{Puedes buscar un mix de jazz en YouTube?}
+    \item \texttt{Puedes reproducir un video de relajacion?}
+    \item \texttt{Puedes poner musica para entrenar?}
+    \item \texttt{Puedes abrir un concierto en vivo de rock?}
+    \item \texttt{Puedes poner la playlist de estudio favorita?}
+    \item \texttt{Puedes buscar una cancion alegre para despertar?}
+    \item \texttt{Puedes poner sonidos ambientales de lluvia?}
+    \item \texttt{Puedes reproducir un podcast motivacional?}
+    \item \texttt{Puedes poner musica instrumental para leer?}
+    \item \texttt{Puedes abrir el ultimo episodio del canal educativo?}
+    \item \texttt{Puedes buscar un documental corto en YouTube?}
+    \item \texttt{Puedes poner la cancion que recomende ayer?}
+    \item \texttt{Puedes investigar noticias sobre inteligencia artificial?}
+    \item \texttt{Puedes buscarme un articulo cientifico sobre robots?}
+    \item \texttt{Que dicen las noticias de tecnologia hoy?}
+    \item \texttt{Puedes buscar tutoriales para aprender Rust?}
+    \item \texttt{Puedes encontrar una guia rapida de React?}
+    \item \texttt{Puedes buscar precios de vuelos a Cancun?}
+    \item \texttt{Puedes darme las tendencias de videojuegos de este mes?}
+    \item \texttt{Puedes analizar este documento PDF?}
+    \item \texttt{Puedes resumirme este texto que pegare?}
+    \item \texttt{Puedes buscar resenas del telefono Pixel?}
+    \item \texttt{Puedes describir lo que ve la camara?}
+    \item \texttt{Puedes abrir la camara frontal?}
+    \item \texttt{Que objetos detectas en la imagen?}
+    \item \texttt{Puedes leer el texto que aparece en la hoja?}
+    \item \texttt{Puedes guardar una captura de la camara?}
+    \item \texttt{Puedes activar la voz para esta conversacion?}
+    \item \texttt{Puedes desactivar el modo voz por ahora?}
+    \item \texttt{Puedes leerme la ultima respuesta en voz alta?}
+    \item \texttt{Puedes usar solo texto hasta nuevo aviso?}
+    \item \texttt{Puedes activar el microfono durante un minuto?}
+    \item \texttt{Puedes darme un dato curioso?}
+    \item \texttt{Cual crees que sea el GOTY este anio?}
+    \item \texttt{Que calificacion merece nuestro proyecto?}
+    \item \texttt{Puedes darme un consejo motivacional?}
+    \item \texttt{Puedes imaginar como seria una aventura epica?}
+    \item \texttt{Puedes decirme que serie ver este fin de semana?}
+    \item \texttt{Puedes contarme una anecdota corta?}
+    \item \texttt{Puedes evaluar mi progreso con retroalimentacion amable?}
+    \item \texttt{Puedes sugerirme un reto creativo?}
+    \item \texttt{Puedes contarme cual fue la pregunta mas rara que recibiste?}
+\end{itemize}
+
+\end{document}
