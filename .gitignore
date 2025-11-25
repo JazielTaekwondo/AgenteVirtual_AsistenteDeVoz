@@ -23,4 +23,4 @@ __pycache__/
 .python-version
 
 # Large local binaries
-tools/ollama/ollama-windows-amd64.zip
+tools/ollama/ollama-windows-amd64.zip.venv/
